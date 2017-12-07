@@ -113,8 +113,8 @@
 			</div>
 			<div class="modal-footer">
 			<textarea id="context" style="resize:none;display:block;margin:10px 0 10px 0; width:100%;height:80px;border:1px solid #4cae4c;border-radius:3px;" ></textarea>
-				<div class="btn btn-success" id="J-btn-fs">发送</div>
-				<div class="btn btn-default" data-dismiss="modal" id="gbck">关闭窗口</div>
+				<div class="btn btn-success" id="J-btn-fs">Enter</div>
+				<div class="btn btn-default" data-dismiss="modal" id="gbck">Esc</div>
 			</div>
 		</div>
 	</div>
@@ -201,15 +201,15 @@
 							if (Date.parse(new Date(data.data[i].ctime))/1000-Date.parse(new Date(pretime))/1000>200){
 								
 								if(data.data[i].jsuname==$("#tk_username").val()){
-									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" style="margin-bottom:5px;"><label style="padding-left:0px;padding-right:0;width:auto;margin-right:5px;" class="col-md-3 control-label">'+data.data[i].fsuname+' :</label><div style="float:left;background:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div><p style="text-align:center;margin-bottom:25px;">'+data.data[i].ctime+'</p>');
+									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" style="margin-bottom:5px;"><p style="text-align:center;margin-bottom:55px;">'+pretime+'</p><label style="padding-left:0px;padding-right:0;width:auto;margin-right:5px;" class="col-md-3 control-label">'+data.data[i].fsuname+' :</label><div style="float:left;background:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
 								}else{
-									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" style="float:right;margin-bottom:5px;"><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+data.data[i].fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div><p style="text-align:center;margin-bottom:25px;">'+data.data[i].ctime+'</p>');
+									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" style="margin-bottom:5px;"><p style="text-align:center;margin-bottom:55px;">'+pretime+'</p><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+data.data[i].fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
 								}
 							}else{
 								if(data.data[i].jsuname==$("#tk_username").val()){
 									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" ><label style="padding-left:0px;padding-right:0;width:auto;margin-right:5px;" class="col-md-3 control-label">'+data.data[i].fsuname+' :</label><div style="float:left;background:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
 								}else{
-									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" style="float:right;"><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+data.data[i].fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
+									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" ><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+data.data[i].fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
 								}
 							}
 							
@@ -248,8 +248,10 @@ $("#J-btn-fs").click(function(){
 	context = $("#context").val();
 	jsuname = $("#tk_username").val();
 	fsuname = $("#talkdx").text();
+	context=context.replace(/(^\s*)|(\s*$)/g, "");
+	context=context.replace(/[\r\n]/g, "");
 	if (context==""){
-		alert("消息不能为空!");
+		
 		return false;
 	}
 	 if(jsuname==""){
@@ -298,15 +300,15 @@ $(function(){
 										if (Date.parse(new Date(str.ctime))/1000-Date.parse(new Date(pretime))/1000>200){
 											
 											if(str.jsuname==$("#tk_username").val()){
-												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" style="margin-bottom:5px;"><label style="padding-left:0px;padding-right:0;width:auto;margin-right:5px;" class="col-md-3 control-label">'+str.fsuname+' :</label><div style="float:left;background:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div><p style="text-align:center;margin-bottom:25px;">'+str.ctime+'</p>');
+												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" style="margin-bottom:5px;"><p style="text-align:center;margin-bottom:55px;">'+pretime+'</p><label style="padding-left:0px;padding-right:0;width:auto;margin-right:5px;" class="col-md-3 control-label">'+str.fsuname+' :</label><div style="float:left;background:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
 											}else{
-												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" style="float:right;margin-bottom:5px;"><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+str.fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div><p style="text-align:center;margin-bottom:25px;">'+str.ctime+'</p>');
+												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" style="margin-bottom:5px;"><p style="text-align:center;margin-bottom:55px;">'+pretime+'</p><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+str.fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
 											}
 										}else{
 											if(str.jsuname==$("#tk_username").val()){
 												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" ><label style="padding-left:0px;padding-right:0;width:auto;margin-right:5px;" class="col-md-3 control-label">'+str.fsuname+' :</label><div style="float:left;background:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
 											}else{
-												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" style="float:right;"><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+str.fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
+												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" ><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+str.fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
 											}
 										}
 							}
@@ -325,15 +327,10 @@ $(function(){
 							async: false,
 							success: function(data) {
 								if(data.success) {
-									///
 									} else {
-									
 								}
-								
-								
 							},
-							error: function() {
-								
+							error: function() {	
 							}
 						});/**/
 					}else{
@@ -343,8 +340,6 @@ $(function(){
 							if($(this).parent().find(".messagenum").text()!=""){
 								num=parseInt($(this).parent().find(".messagenum").text(),10);
 							}
-							
-							
 							
 							num++;
 							$(this).parent().find(".messagenum").text(num);
@@ -370,8 +365,7 @@ function ishaveNewMessage(){
 			},
 				async: false,
 				success: function(data) {
-					if(data.success) {
-						
+					if(data.success) {	
 							$("table .uname").each(function(){
 								uname=$(this).text();
 								if(data.data!=null){
@@ -379,23 +373,17 @@ function ishaveNewMessage(){
 									if(key == uname){
 										$(this).parent().find(".messagenum").text(data.data[key]);
 										if(data.data[key]!=""){
-										$(this).parent().find(".messagenum").css("opacity",1);
-										
+										$(this).parent().find(".messagenum").css("opacity",1);					
 										}else{
 											$(this).parent().find(".messagenum").css("opacity",0);
 										}
 										break;
 									}
 									}
-								}else{
-									
+								}else{				
 									$(this).parent().find(".messagenum").css("opacity",0);
 								}
-								
-								
-								
-								
-							});
+					});
 						
 						
 						
