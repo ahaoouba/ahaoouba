@@ -1,0 +1,97 @@
+{{template "/model/head.html" .}}
+<div class="container-fluid  main-container">
+	<div class="row">
+	
+		{{template "/model/menu.html" .}}
+		
+			<div style="float:left;margin-left:30px;width:1320px;" id="piclist">
+			
+			{{range $k1,$v1:=$.timearr}}
+			<div style="margin-bottom:30px;">
+				
+				<p style="font-size:30px;">{{$v1}}</p>
+				<div>
+					{{range $k,$v:=$.pics}}
+					{{if eq $v.Ctime $v1}}
+						<div style="border-radius:5px;border:5px #9e9e9e solid; float:left;margin-right:20px;margin-top:10px;position:relative;" id="{{$v.Id}}"><input class="che" type="checkbox" style="position:absolute;right:0;top:0;margin:0;width:20px;height:20px;"/><img style="width:200px;height:200px;" src="{{$v.Url}}"/></div>	
+					{{end}}
+					{{end}}
+						<div style=" clear:both;"></div>
+				</div>
+			</div>
+			{{end}}
+			<div class="form-group" style="margin-top:50px;">
+				<input  value="删除" onclick="deletepic();" class="btn btn-primary">
+			</div>
+			
+							
+			</div>
+		</div>
+	</div>
+	
+<!--删除模态框-->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">删除</h4>
+			</div>
+			<div class="modal-body">
+				<p>确定删除该记录吗？</p>
+			</div>
+			<div class="modal-footer">
+				<div class="btn btn-success" id="J-btn-del">确定</div>
+				<div class="btn btn-default" data-dismiss="modal">取消</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$("#piclist").delegate(".che","click",function(){
+	
+	if ($(this).attr("checked")=="checked"){
+	
+		$(this).attr("checked",false);
+	}else{
+		$(this).attr("checked","checked");
+	}
+	
+});
+function deletepic(){
+	ids="";
+	$('input:checkbox').each(function(){
+		if ($(this).attr('checked')=="checked"){
+			ids=ids+";"+$(this).parent().attr("id");
+		}
+	});
+	ids=ids.substring(1,ids.Length);
+	$.ajax({
+		
+				url: "/index/delpic",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					ids:ids,
+					
+			},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						alert(data.msg);
+						location.reload();
+						
+					} else {
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("删除失败，请稍后再试！");
+				}
+			});/**/
+}
+	
+</script>
+</body>
+
+</html>

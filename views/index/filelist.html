@@ -1,0 +1,104 @@
+{{template "/model/head.html" .}}
+<div class="container-fluid  main-container">
+	<div class="row">
+		{{template "/model/menu.html" .}}
+		<div class="page-content" style="margin-left: 260px;">
+			<div class="c-main-tit">
+				<ol class="breadcrumb">
+					<li>
+						<a class="section">文件管理</a>
+					</li>
+					<li>
+						<a class="section" href="">文件信息</a>
+					</li>
+				</ol>
+			</div>
+			<!--表单-->
+			<div class="c-form">
+				
+			
+				
+			</div>
+			<div class="c-table">
+				<table class="table table-bordered">
+					<tr>
+						<th>文件标识</th>
+						<th>文件名称</th>
+						<th>文件路径</th>
+						
+						<th>操作</th>
+					</tr>
+					{{range $k,$v:=$.files}}
+					<tr>
+						<td>{{$v.Id}}</td>
+						<td>{{$v.Fname}}</td>
+						<td>{{$v.Filepath}}</td>
+						
+						<td>
+							
+							<button class="btn btn-default gdel" onclick="DelFile({{$v.Id}},{{$v.Filepath}})">
+								删除
+							</button>
+							<a href="{{$v.Filepath}}" class="btn btn-default gdel"   >
+								下载
+							</a>
+						</td>
+					</tr>
+					{{end}}
+					
+						
+								
+							
+				</table>
+				
+				<div class="c-table" style="display:table;margin:0 auto;" >
+							
+									<div style="float:left;">
+									
+									{{template "/model/page.html" .}}
+										</div>
+										<div style="width:0;clear:both;"></div>
+								
+						</div>	
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+
+
+</body>
+<script>
+function DelFile(id,path){
+	if (id==""){
+		alert("文件标识不能为空!");
+		return false;
+	}
+	$.ajax({
+				url: "/index/filedel",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					id:id,
+					path:path
+			},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						alert(data.msg);
+						location.reload();
+						
+					} else {
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("删除文件失败，请稍后再试！");
+				}
+			});/**/
+}
+
+
+</script>
+</html>

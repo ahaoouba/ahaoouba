@@ -1,0 +1,421 @@
+{{template "/model/head.html" .}}
+<div class="container-fluid  main-container">
+	<div class="row">
+		{{template "/model/menu.html" .}}
+		<div class="page-content" style="margin-left: 260px;">
+			<div class="c-main-tit">
+				<ol class="breadcrumb">
+					<li>
+						<a class="section">用户管理</a>
+					</li>
+					<li>
+						<a class="section" href="">用户信息</a>
+					</li>
+				</ol>
+			</div>
+			<!--表单-->
+			<div class="c-form">
+				
+			
+				
+			</div>
+			<div class="c-table">
+				<table class="table table-bordered">
+					<tr>
+						<th>用户标识</th>
+						<th>用户名称</th>
+						<th>身份</th>
+						<th>登录状态</th>
+						<th>操作</th>
+					</tr>
+					{{range $k,$v:=$.user}}
+					{{if ne $v.Name $.username}}
+					<tr>
+						<td>{{$v.Id}}</td>
+						<td class="uname">{{$v.Name}}</td>
+						<td>{{if eq $v.Auth "admin"}}管理员{{else}}普通用户{{end}}</td>
+						<td>{{if eq $v.Islogin "true"}}<span style="color:green;">在线</span>{{else}}<span style="color:red;">离线</span>{{end}}</td>
+						<td>
+							
+							<button class="btn btn-default gdel" onclick="ModUser({{$v.Id}},{{$v.Name}},{{$v.Auth}})">
+								修改
+							</button>
+							<button class="btn btn-default gdel changeOpacity" onclick="Talk({{$v.Id}},{{$v.Name}},this)" style="position:relative;">
+								TalkTalk
+								<div data-kg="off" class="messagenum" style="position:absolute;width:20px;height:20px;background:red;right:-5px;top:-5px;border-radius:50%;color:#fff;text-align:center;line-height:20px;opacity:0;">0</div>
+							</button>
+						</td>
+					</tr>
+					{{end}}
+					{{end}}
+					<tfoot>
+						<tr>
+							<th colspan="5">
+								{{template "/model/page.html" .}}
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+</div>
+<!--添加模态框-->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">修改</h4>
+			</div>
+			<div class="modal-body">
+				<form action="" method="" enctype="multipart/form-data" class="form-horizontal">
+					<div class="form-group">
+						<label class="col-md-3 control-label">用户名：</label>
+						<div class="col-md-8">
+							<input class="form-control"  id="username" type="text" value="" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label">身份(admin/user):</label>
+						<div class="col-md-8">
+							<input class="form-control"  id="auth" type="text" value="" />
+						</div>
+					</div>
+					
+					
+				</form>
+			</div>
+			<div class="modal-footer">
+				<div class="btn btn-success" id="J-btn-add">确定</div>
+				<div class="btn btn-default" data-dismiss="modal">取消</div>
+			</div>
+		</div>
+	</div>
+</div>
+<input id="uid" type="hidden" value="" />
+<!--发送消息模态框-->
+<div class="modal fade" aria-hidden="true" data-backdrop="static" id="modal2" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog" role="document" >
+		<div class="modal-content" style="background:rgb(245,245,245);">
+			<div class="modal-header" style="background:rgb(90,90,90);opacity:0.8;">
+				
+				<h4 class="modal-title" id="talkdx" style="color:#fff;text-align:center;font-size:30px;"></h4>
+			</div>
+			<div class="modal-body" style="padding-right:0;">
+			
+				<div id="talkbody" class="talkbo" style="height:500px;overflow-y:scroll;">
+					
+						
+						
+				</div>
+			</div>
+			<div class="modal-footer">
+			<textarea id="context" style="resize:none;display:block;margin:10px 0 10px 0; width:100%;height:80px;border:1px solid #4cae4c;border-radius:3px;" ></textarea>
+				<div class="btn btn-success" id="J-btn-fs">发送</div>
+				<div class="btn btn-default" data-dismiss="modal" id="gbck">关闭窗口</div>
+			</div>
+		</div>
+	</div>
+</div>
+<input type="hidden" value="{{$.username}}" id="tk_username"/>
+<!--发送消息模态框结束-->
+<script type="text/javascript">
+
+	function ModUser(id,name,auth){
+		$('#modal1').modal('show');
+		$("#username").val(name);
+		$("#uid").val(id);
+		
+		$("#auth").val(auth);
+	}
+	$("#J-btn-add").click(function(){
+		var name=$("#username").val();
+		var id=$("#uid").val();
+		var auth=$("#auth").val();
+		if (id==""){
+			alert("用户标识不能为空!");
+			return false;
+		}else if(name==""){
+			alert("用户名不能为空!");
+			return false;
+		}else if(auth==""){
+			alert("身份不能为空!");
+			return false;
+		}else{
+			
+			$.ajax({
+					url: "/index/moduser",
+					type: 'POST',
+					dataType: "json",
+					data: {
+						id:id,
+						name:name,
+						auth:auth,
+				},
+					async: false,
+					success: function(data) {
+						if(data.success) {
+							alert(data.msg);
+							location.reload();
+							
+						} else {
+							alert(data.errmsg);
+						}
+					},
+					error: function() {
+						alert("修改用户信息失败，请稍后再试！");
+					}
+				});/**/
+		}
+	});	
+
+	//聊天功能
+	$(".changeOpacity").on("click",function(){
+		$(this).find(".messagenum").css("opacity",0);
+		$(this).find(".messagenum").text("0");
+		$(this).find(".messagenum").data("kg","on");
+	});
+	function Talk( id, name){
+		$("#context").val("");
+		$("#talkbody").empty();
+		$("#talkdx").text(name);
+		$.ajax({
+				url: "/index/talks",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					jsuname:$("#tk_username").val(),
+					fsuname:$("#talkdx").text(),
+					qingqiuren:$("#tk_username").val(),
+			},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						for(i=0;i<data.data.length;i++){
+							//Date.parse(new Date(stringTime))/1000
+							var pretime = $("#talkbody .form-group").last().data('ctime');
+							
+							
+							if (Date.parse(new Date(data.data[i].ctime))/1000-Date.parse(new Date(pretime))/1000>200){
+								
+								if(data.data[i].jsuname==$("#tk_username").val()){
+									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" style="margin-bottom:5px;"><label style="padding-left:0px;padding-right:0;width:auto;margin-right:5px;" class="col-md-3 control-label">'+data.data[i].fsuname+' :</label><div style="float:left;background:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div><p style="text-align:center;margin-bottom:25px;">'+data.data[i].ctime+'</p>');
+								}else{
+									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" style="float:right;margin-bottom:5px;"><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+data.data[i].fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div><p style="text-align:center;margin-bottom:25px;">'+data.data[i].ctime+'</p>');
+								}
+							}else{
+								if(data.data[i].jsuname==$("#tk_username").val()){
+									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" ><label style="padding-left:0px;padding-right:0;width:auto;margin-right:5px;" class="col-md-3 control-label">'+data.data[i].fsuname+' :</label><div style="float:left;background:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
+								}else{
+									$("#talkbody").append('<div data-ctime="'+data.data[i].ctime+'" class="form-group" style="float:right;"><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+data.data[i].fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+data.data[i].context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
+								}
+							}
+							
+						}
+						
+						
+					} else {
+						
+					}
+					
+					
+				},
+				error: function() {
+					
+				}
+			});/**/
+		//浏览器输出结果是0；
+		setTimeout(function(){
+			document.getElementById('talkbody').scrollTop = 10000;
+		},350);
+		$('#modal2').modal('show');
+		
+		
+	}
+	$(document).keyup(function(event){
+		switch(event.keyCode){
+			case 27:
+			$("#gbck").click();
+			break;
+			case 13:
+			$("#J-btn-fs").click();
+			break;
+		}
+	});
+$("#J-btn-fs").click(function(){
+	context = $("#context").val();
+	jsuname = $("#tk_username").val();
+	fsuname = $("#talkdx").text();
+	if (context==""){
+		alert("消息不能为空!");
+		return false;
+	}
+	 if(jsuname==""){
+		alert("接收者异常!");
+		return false;
+	}
+	if (fsuname=="发送者异常!"){
+		alert("发送者异常!");
+		return false;
+	}
+	$("#context").val("");
+	$.ajax({
+			url: "/index/addtalk",
+			type: 'POST',
+			dataType: "json",
+			data: {
+				jsuname:$("#talkdx").text(),
+				fsuname:$("#tk_username").val(),
+				context:context,
+				qingqiuren:$("#tk_username").val(),
+			},
+			async: false,
+			success: function(data) {
+				if(data.success) {	
+				}
+					
+			},
+			error: function() {
+				
+			}
+	});/**/
+});
+$(function(){
+	ishaveNewMessage();	
+	var ws = new WebSocket('ws://192.168.10.23:8800/index/ws');
+		ws.onmessage = function(e) {
+			var jsonstr = $.parseJSON(e.data);
+			var str=jsonstr.Message;
+			
+				$("table .uname").each(function(){
+					if ($(this).parent().find(".messagenum").data('kg')=="on"){
+									if((str.jsuname==$("#talkdx").text()&&str.fsuname==$("#tk_username").val())||(str.jsuname==$("#tk_username").val()&&str.fsuname==$("#talkdx").text())){
+										var pretime = $("#talkbody .form-group").last().data('ctime');
+										
+										
+										if (Date.parse(new Date(str.ctime))/1000-Date.parse(new Date(pretime))/1000>200){
+											
+											if(str.jsuname==$("#tk_username").val()){
+												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" style="margin-bottom:5px;"><label style="padding-left:0px;padding-right:0;width:auto;margin-right:5px;" class="col-md-3 control-label">'+str.fsuname+' :</label><div style="float:left;background:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div><p style="text-align:center;margin-bottom:25px;">'+str.ctime+'</p>');
+											}else{
+												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" style="float:right;margin-bottom:5px;"><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+str.fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div><p style="text-align:center;margin-bottom:25px;">'+str.ctime+'</p>');
+											}
+										}else{
+											if(str.jsuname==$("#tk_username").val()){
+												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" ><label style="padding-left:0px;padding-right:0;width:auto;margin-right:5px;" class="col-md-3 control-label">'+str.fsuname+' :</label><div style="float:left;background:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
+											}else{
+												$("#talkbody").append('<div data-ctime="'+str.ctime+'" class="form-group" style="float:right;"><label style="padding-left:0px;padding-right:0px;width:auto;margin-right:15px;margin-left:5px; float:right;" class="col-md-3 control-label">: '+str.fsuname+'</label><div style="background:#fff;float:right;background:#5cb85c;color:#fff;padding:3px;width:auto;max-width:300px;min-height:20px; border:1px solid #ccc;border-radius:3px;" class="col-md-8">'+str.context+'</div><div style="clear:both;"></div></div><div style="clear:both;"></div>');
+											}
+										}
+							}
+							/////
+							$("#talkbody").scrollTop(10000);
+							///
+							$.ajax({
+							url: "/index/talks",
+							type: 'POST',
+							dataType: "json",
+							data: {
+								jsuname:$("#tk_username").val(),
+								fsuname:$("#talkdx").text(),
+								qingqiuren:$("#tk_username").val(),
+						},
+							async: false,
+							success: function(data) {
+								if(data.success) {
+									///
+									} else {
+									
+								}
+								
+								
+							},
+							error: function() {
+								
+							}
+						});/**/
+					}else{
+						uname=$(this).text();
+						if(str.fsuname == uname){
+							var num=0;
+							if($(this).parent().find(".messagenum").text()!=""){
+								num=parseInt($(this).parent().find(".messagenum").text(),10);
+							}
+							
+							
+							
+							num++;
+							$(this).parent().find(".messagenum").text(num);
+							$(this).parent().find(".messagenum").css("opacity",1);
+							
+						}
+					}
+					
+								
+				});
+			
+		}
+	});
+////
+function ishaveNewMessage(){
+		
+		$.ajax({
+				url: "/index/ishavenewtalk",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					jsuname:$("#tk_username").val(),
+			},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						
+							$("table .uname").each(function(){
+								uname=$(this).text();
+								if(data.data!=null){
+									for(key in data.data){
+									if(key == uname){
+										$(this).parent().find(".messagenum").text(data.data[key]);
+										if(data.data[key]!=""){
+										$(this).parent().find(".messagenum").css("opacity",1);
+										
+										}else{
+											$(this).parent().find(".messagenum").css("opacity",0);
+										}
+										break;
+									}
+									}
+								}else{
+									
+									$(this).parent().find(".messagenum").css("opacity",0);
+								}
+								
+								
+								
+								
+							});
+						
+						
+						
+					} else {
+						
+					}
+				},
+				error: function() {
+					
+				}
+			});/**/
+	}	
+	
+	///
+	$("#gbck").click(function(){
+		$("table .uname").each(function(){
+			$(this).parent().find(".messagenum").data('kg','off')
+		});
+	});	
+</script>
+</body>
+
+</html>

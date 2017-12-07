@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>注册</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Free HTML5 Template by FreeHTML5.co" />
+	<meta name="keywords" content="free html5, free template, free bootstrap, html5, css3, mobile first, responsive" />
+	
+
+  
+
+  	<!-- Facebook and Twitter integration -->
+	<meta property="og:title" content=""/>
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content=""/>
+	<meta property="og:site_name" content=""/>
+	<meta property="og:description" content=""/>
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:url" content="" />
+	<meta name="twitter:card" content="" />
+
+	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+	<link rel="shortcut icon" href="favicon.ico">
+
+	
+	
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/css/animate.css">
+	<link rel="stylesheet" href="/static/css/style.css">
+
+	<!-- Modernizr JS -->
+	<script src="/static/js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="/static/js/respond.min.js"></script>
+	<![endif]-->
+
+	</head>
+	<body class="style-2">
+
+		<div class="container">
+			
+			<div class="row">
+				<div class="col-md-4">
+					
+
+					<!-- Start Sign In Form -->
+					<form action="#" class="fh5co-form animate-box" data-animate-effect="fadeInLeft">
+						<h2>注册</h2>
+						<!--<div class="form-group">
+							<div class="alert alert-success" role="alert">Your info has been saved.</div>
+						</div>-->
+						<div class="form-group">
+							<label for="name" class="sr-only">Name</label>
+							<input type="text" class="form-control" id="name" placeholder="用户名" autocomplete="off">
+						</div>
+						
+						<div class="form-group">
+							<label for="password" class="sr-only">Password</label>
+							<input type="password" class="form-control" id="password" placeholder="密码" autocomplete="off">
+						</div>
+						<div class="form-group">
+							<label for="re-password" class="sr-only">Re-type Password</label>
+							<input type="password" class="form-control" id="re-password" placeholder="重复密码" autocomplete="off">
+						</div>
+						<div class="form-group">
+							<label for="phone" class="sr-only">PhoneNumber</label>
+							<input type="phone" class="form-control" id="phone" placeholder="电话号" autocomplete="off">
+						</div>
+						<div class="form-group" style="position:relative;">
+							<label for="email" class="sr-only">PhoneNumber</label>
+							<input  id="code" class="form-control" style="display:inline;" placeholder="验证码">
+							<button type="button" class="btn btn-small get-code"  id="J_getCode" style="position:absolute;top:0;right:0;">获取验证码</button>
+							<button type="button" class="btn btn-small reset-code" id="J_resetCode" style="display:none;position:absolute;top:0;right:0;" ><span id="J_second">30</span>s后重新获取</button>
+						</div>
+						
+						
+						<div class="form-group">
+							<p>已有账号? <a href="/index/login">登录</a></p>
+						</div>
+						<div class="form-group">
+							<input  value="注册" onclick="tj()" class="btn btn-primary">
+							
+						</div>
+					</form>
+					<!-- END Sign In Form -->
+
+
+				</div>
+			</div>
+			
+		</div>
+	
+	<!-- jQuery -->
+	<script src="/static/js/jquery.min.js"></script>
+	<!-- Bootstrap -->
+	<script src="/static/js/bootstrap.min.js"></script>
+	<!-- Placeholder -->
+	<script src="/static/js/jquery.placeholder.min.js"></script>
+	<!-- Waypoints -->
+	<script src="/static/js/jquery.waypoints.min.js"></script>
+	<!-- Main JS -->
+	<script src="/static/js/main.js"></script>
+<script>
+function tj(){
+	var name=$("#name").val();
+	var phone=$("#phone").val();
+	var password=$("#password").val();
+	var repassword=$("#re-password").val();
+	var code=$("#code").val();
+	
+	if (password!=repassword){
+		alert("两次输入密码不一致!");
+		return false;
+	}
+	if (code==""){
+		alert("请输入验证码");
+		return false;
+	}
+	$.ajax({
+				url: "/index/regajax",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					name:name,
+					phone:phone,
+					password: password,
+					yzm:code,
+				},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						alert("注册成功!");
+						window.location.href="/index/login";
+					} else {
+						alert(data.errmsg);
+						return;
+						location.reload();
+					}
+				},
+				error: function() {
+					alert("注册失败失败，请稍后再试！");
+				}
+
+			});/**/
+			
+}
+
+/*获取验证码*/
+$("#J_getCode").click(function(){
+	var phone = $('#phone').val();
+	var pattern = /^1[0-9]{10}$/;
+	if(phone == '') {
+		alert('请输入手机号码');
+		return false;
+	}
+	if(!pattern.test(phone)){
+		alert('请输入正确的手机号码');
+		return false;
+	}
+	resetCode(); //倒计时
+	$.ajax({
+				url: "/index/message",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					phone:phone,
+				},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						$("#code").attr("placeholder","验证码已成功发送");
+					} else {
+						$("#code").attr("placeholder","验证码发送失败");
+					}
+				},
+				error: function() {
+					alert("发送失败，请稍后再试！");
+				}
+
+			});/**/
+});
+
+
+//倒计时
+function resetCode(){
+	$('#J_getCode').hide();
+	$("#J_resetCode").attr("disabled", true); 
+	$('#J_second').html('30');
+	$('#J_resetCode').show();
+	var second = 30;
+	var timer = null;
+	timer = setInterval(function(){
+		second -= 1;
+		if(second >0 ){
+			$('#J_second').html(second);
+		}else{
+			clearInterval(timer);
+			$('#J_getCode').show();
+			$('#J_resetCode').hide();
+		}
+	},1000);
+}
+</script>
+	</body>
+</html>
+

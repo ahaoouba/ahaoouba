@@ -1,0 +1,400 @@
+{{template "/model/head.html" .}}
+<div class="container-fluid  main-container">
+	<div class="row">
+		{{template "/model/menu.html" .}}
+		<div class="page-content" style="margin-left: 260px;">
+			<div class="c-main-tit">
+				<ol class="breadcrumb">
+					<li>
+						<a class="section">文章管理</a>
+					</li>
+					<li>
+						<a class="section" href="">文章信息</a>
+					</li>
+				</ol>
+			</div>
+			<!--表单-->
+			<div class="c-form">
+				
+			
+				
+			</div>
+			<div class="c-table">
+				<table class="table table-bordered">
+				
+					<tr>
+						<th>文章标识</th>
+						<th>文章标题</th>
+						
+						<th>所属分类</th>
+						<th>添加人</th>
+						<th>操作</th>
+					</tr>
+					{{range $k,$v:=$.article}}
+					
+					<tr>
+						<td>{{$v.Id}}</td>
+						<td>{{$v.Title}}</td>
+						<td>{{$v.Cname}}</td>
+						<td>{{$v.Uname}}</td>
+						<td>
+							<button class="btn btn-default gdel" onclick=showpic({{$v.PicUrl}},{{$v.Shows}})>
+								查看图片
+							</button>
+							<button class="btn btn-default gdel" onclick=tjtp({{$v.Id}})>
+								添加图片
+							</button>
+							<button class="btn btn-default gdel" onclick=artxq({{$v.Id}})>
+								文章详情
+							</button>
+							<button class="btn btn-default gdel" onclick=artdel({{$v.Id}})>
+								删除
+							</button>
+						</td>
+					</tr>
+					{{end}}
+					<tfoot>
+						<tr>
+							<th colspan="5">
+								{{template "/model/page.html" .}}
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+</div>
+<!--图片列表模态框-->
+<div class="modal fade bs-example-modal-lg" id="modal1" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">文章图片(勾选为展示状态)</h4>
+			</div>
+			<div class="modal-body">
+				<form action="" method="" enctype="multipart/form-data" class="form-horizontal">
+					<div class="form-group" id="piclist">
+						
+						
+					</div>
+					
+					
+					
+				</form>
+			</div>
+			<div class="modal-footer">
+				<div class="btn btn-success" id="J-btn-xxx">确定</div>
+				<div class="btn btn-default" data-dismiss="modal">取消</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--上传图片模态框-->
+<div class="modal fade bs-example-modal-lg" id="modal2" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">上传图片</h4>
+			</div>
+			<div class="modal-body">
+			
+					<div class="form-group form-horizontal" role="document">
+						<label class="col-md-2 control-label">添加图片：</label>
+						<div class="col-md-10" id="ss" >
+							<form action="" id="ContentForm" method="post" enctype="multipart/form-data" class="form-horizontal">
+						<!--待添加内容-->
+							</form>						
+						</div>
+					</div>
+					<br/>
+					
+					
+				
+			</div>
+			<div class="modal-footer">
+				<div class="btn btn-success" id="J-btn-add">确定</div>
+				<div class="btn btn-default" data-dismiss="modal">取消</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--删除模态框-->
+<div class="modal fade bs-example-modal-lg" id="modal3" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">确定删除该文章么?</h4>
+			</div>
+			
+			<div class="modal-footer">
+				<div class="btn btn-success" id="J-btn-del">确定</div>
+				<div class="btn btn-default" data-dismiss="modal">取消</div>
+			</div>
+		</div>
+	</div>
+</div>
+<input id="uid" type="hidden" value="" />
+<input id="pid" type="hidden" value=""/>
+<input id="artid" type="hidden" value="" />
+<input id="delartid" type="hidden" value="" />
+<script type="text/javascript">
+function ModUser(id,name){
+	$('#modal1').modal('show');
+	$("#username").val(name);
+	$("#uid").val(id);
+}
+$("#J-btn-add").click(function(){
+	var name=$("#username").val();
+	var id=$("#uid").val();
+	if (id==""){
+		alert("用户标识不能为空!");
+		return false;
+	}else if(name==""){
+		alert("用户名不能为空!");
+		return false;
+	}else{
+		
+		$.ajax({
+				url: "/index/moduser",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					id:id,
+					name:name,
+			},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						alert(data.msg);
+						location.reload();
+						
+					} else {
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("修改用户信息失败，请稍后再试！");
+				}
+			});/**/
+	}
+});	
+
+function showpic(url,shows){
+	showarr =shows.split(';');
+	
+	$("#piclist").empty();
+	$('#modal1').modal('show');
+	strs=new Array();
+	strs=url.split(";")
+	
+	for(i=0;i<strs.length;i++){
+		if(strs[i]!=""){
+		$("#piclist").append('<div style="position:relative;width:200px;height:200px;float:left;margin-left:20px; margin-bottom:20px;"><img style="width:200px;height:200px;" src='+strs[i]+'/><input type="checkbox" '+(showarr[i]=="true"?'checked="checked"':'')+' class="che" style="float:right;margin:0;width:20px;height:20px;position:absolute;right:0;top:0;"/></div>');
+	}
+	}
+	
+	
+}
+function tjtp(artid){
+	
+	$("#artid").val(artid);
+	$('#modal2').modal('show');
+	
+}
+///////
+var str = '<div class="tab-content zs_two">' +
+			'<form id="upload_files" method="post" enctype="multipart/form-data">' +
+			'<input type="file" name="file[]" id="filer_input" data-jfiler-uploadUrl="" multiple></form></div>';
+var $cont = $(str);
+		$('#ss').html($cont);
+	//上传
+		$('#filer_input').filer({
+			showThumbs: true,
+			/*只有扩展名为xslx的文件可以上传*/
+			extensions: null,
+			uploadFile: {
+				url: "/index/picadd",
+				data: {},
+				type: 'POST',
+				enctype: 'multipart/form-data',
+				//              beforeSend: function(){},
+				success: function(data, el) {
+					$('#tb tr:gt(0)').remove(); //删除之前的数据
+					var ok;
+					if(data.success) {
+						ok = "上传成功";
+						$("#pid").val(data.msg);
+						addpic();
+					} else {
+						ok = "上传失败：" + data.errmsg
+					}
+					//生成导入信息
+					// var s = '';
+					// s += '<tr><td>' + data.success + '</td><td></td><td></td>' +
+					// 	'<td></td></tr>';
+					// $('#tb tbody').append(s);
+					//如果有失败条数自动生成表格
+					// if(data.data.ErrCount != 0) {
+					// 	$('#tbb tr:gt(0)').remove(); //删除之前的数据
+					// 	var sb = '';
+					// 	for(var i = 0; i < data.data.ErrInfo.length; i++) {
+					// 		sb += '<tr><td>' + eval(i + 1) + '</td><td>' + data.data.ErrInfo[i].Objname + '</td><td>' + data.data.ErrInfo[i].Info + '</td>' +
+					// 			'<td>' + data.data.ErrInfo[i].Time + '</td></tr>';
+					// 	}
+					// 	$('#tbb tbody').append(sb);
+					// }
+					var parent = el.find(".jFiler-jProgressBar").parent();
+					el.find(".jFiler-jProgressBar").fadeOut("slow", function() {
+						if(data.success) {
+							$("<div class=\"jFiler-item-others text-success\"><i class=\"icon-jfi-check-circle\"></i>"+ok+"</div>").hide().appendTo(parent).fadeIn("slow");
+							 $(".text-success").css({
+								"position":"absolute",
+								"top":"-55px",
+								"left":"420px"
+							});
+						} else {
+							console.log(data.errmsg);
+							$("<div class=\"jFiler-item-others text-error\" style=\"color:#e92322;\"><i class=\"icon-jfi-minus-circle\"></i>"+ok+"</div>").hide().appendTo(parent).fadeIn("slow");
+							$(".text-error").css({
+								"position":"absolute",
+								"top":"-19px",
+								"left":0
+							});
+						}
+					});
+					console.log(data);
+				},
+				error: function(el) {
+					var parent = el.find(".jFiler-jProgressBar").parent();
+					el.find(".jFiler-jProgressBar").fadeOut("slow", function() {
+						$("<div class=\"jFiler-item-others text-error\"><i class=\"icon-jfi-minus-circle\"></i> 上传失败</div>").hide().appendTo(parent).fadeIn("slow");
+					});
+				},
+				statusCode: null,
+				onProgress: null,
+				onComplete: null
+			},
+		});
+/////////
+function addpic(){
+	id=$("#artid").val();
+	pid=$("#pid").val();
+	$.ajax({
+				url: "/index/addartpic",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					id:id,
+					pid:pid,
+			},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						alert(data.msg);
+						location.reload();
+						
+					} else {
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("添加图片失败，请稍后再试！");
+				}
+			});/**/
+}
+$("#J-btn-xxx").click(function(){
+	var uurl=""
+	var statusarr=""
+	$('input:checkbox').each(function(){
+		url=$(this).prev().attr("src");
+		$(this).val(url);
+		uurl=uurl+";"+url
+		
+		if ($(this).attr('checked')=="checked"){
+			statusarr=statusarr+";"+"true";
+		}else{
+			statusarr=statusarr+";"+"false";
+		}
+	});
+	uurl=uurl.substring(1,uurl.Length);
+	statusarr=statusarr.substring(1,statusarr.Length);
+	$.ajax({
+		
+				url: "/index/picshow",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					urls:uurl,
+					status:statusarr,
+			},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						alert(data.msg);
+						location.reload();
+						
+					} else {
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("修改图片展示状态失败，请稍后再试！");
+				}
+			});/**/
+	
+});
+$("#piclist").delegate(".che","click",function(){
+	
+	if ($(this).attr("checked")=="checked"){
+	
+		$(this).attr("checked",false);
+	}else{
+		$(this).attr("checked","checked");
+	}
+	
+});
+function artxq(id){
+	window.location.href="/index/artxq?id="+id;
+}
+function artdel(id){
+	$('#modal3').modal('show');
+	$("#delartid").val(id);
+}
+$("#J-btn-del").click(function(){
+	id=$("#delartid").val();
+	if (id==""){
+		alert("文章标识不能为空!");
+		return false;
+	}
+	$.ajax({
+		
+				url: "/index/delart",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					id:id,
+			},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						alert(data.msg);
+						location.reload();
+						
+					} else {
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("删除文章失败，请稍后再试！");
+				}
+			});/**/
+});
+</script>
+</body>
+
+</html>

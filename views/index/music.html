@@ -1,0 +1,127 @@
+{{template "/model/head.html" .}}
+<div class="container-fluid  main-container">
+	<div class="row">
+		{{template "/model/menu.html" .}}
+		
+	<div class="page-content" style="margin-left: 260px;">
+			<div class="c-main-tit">
+				<ol class="breadcrumb">
+					<li>
+						<a class="section">音乐管理</a>
+					</li>
+					<li>
+						<a class="section" href="">音乐列表	</a>
+					</li>
+				</ol>
+			</div>
+			<!--表单-->
+			<div class="c-form">
+				
+			
+				
+			</div>
+			<div class="c-table">
+				<table class="table table-bordered">
+				
+					<tr>
+						<th>音乐标识</th>
+						<th>音乐名称</th>
+						
+						
+						<th>所在路径</th>
+						<th style="width:30%;">操作</th>
+					</tr>
+					{{range $k,$v:=$.music}}
+					<tr>
+						<td>{{$v.Id}}</td>
+						<td>{{$v.Name}}</td>
+						<td>{{$v.Path}}</td>
+						<td>
+						<audio id="{{$v.Id}}" class="btn btn-default gdel aud" style="padding:0;" src="/{{$v.Path}}" controls="controls" loop="false" ></audio>
+							<!--<button class="btn btn-default gdel" onclick=st({{$v.Id}})>
+								试听
+							</button>-->
+							<button class="btn btn-default gdel" onclick=del({{$v.Id}},{{$v.Path}})>
+								删除
+							</button>
+							
+						</td>
+					</tr>
+					{{end}}
+					<tfoot>
+						<tr>
+							<th colspan="4">
+								{{template "/model/page.html" .}}
+							</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+</div>
+<!--删除模态框-->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">删除</h4>
+			</div>
+			<div class="modal-body">
+				<p>确定删除该记录吗？</p>
+			</div>
+			<div class="modal-footer">
+				<div class="btn btn-success" id="J-btn-del">确定</div>
+				<div class="btn btn-default" data-dismiss="modal">取消</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+function st(mid){
+	var myAuto=document.getElementById(mid);
+	myAuto.play();
+}
+function del(mid,path){
+	if (mid==""){
+		alert("音乐标识不能为空!");
+		return;
+	}
+	$.ajax({
+				url: "/index/delmusic",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					mid:mid,
+					path:path,
+				},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						alert(data.msg);
+						location.reload();
+						
+					} else {
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("音乐删除失败，请稍后再试！");
+				}
+			});/**/
+}
+	//var pauseAudio=document.querySelector(".aud");
+	//for(var i=0;i<pauseAudio.length;i++){
+		//pauseAudio.onplay=function(e){
+		//for(var i=0;i<pauseAudio.length;i++){
+		//	pauseAudio.ended();
+		//}
+		//this.play();
+	//}
+	
+</script>
+</body>
+
+</html>

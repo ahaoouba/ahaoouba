@@ -1,0 +1,119 @@
+{{template "/model/head.html" .}}
+<div class="container-fluid  main-container">
+	<div class="row">
+		{{template "/model/menu.html" .}}
+		<div class="page-content" style="margin-left: 260px;">
+			<div class="form-horizontal" style="margin-top:20px;">
+				<div class="col-md-8">
+					<div class="form-group" role="document">
+						<label class="col-md-2 control-label">添加音乐(.MP3)：</label>
+						<div class="col-md-10" id="ss">
+							<form action="" id="ContentForm" method="post" enctype="multipart/form-data" class="form-horizontal">
+						<!--待添加内容-->
+							</form>						
+						</div>
+					</div>
+				</div>	
+			</div>	
+		</div>	
+	</div>
+	
+</div>
+<!--删除模态框-->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">删除</h4>
+			</div>
+			<div class="modal-body">
+				<p>确定删除该记录吗？</p>
+			</div>
+			<div class="modal-footer">
+				<div class="btn btn-success" id="J-btn-del">确定</div>
+				<div class="btn btn-default" data-dismiss="modal">取消</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+var str = '<div class="tab-content zs_two">' +
+			'<form id="upload_files" method="post" enctype="multipart/form-data">' +
+			'<input type="file" name="file[]" id="filer_input" data-jfiler-uploadUrl="" multiple></form></div>';
+var $cont = $(str);
+		$('#ss').html($cont);
+	//上传
+		$('#filer_input').filer({
+			showThumbs: true,
+			/*只有扩展名为xslx的文件可以上传*/
+			extensions: null,
+			uploadFile: {
+				url: "/index/musicadd",
+				data: {},
+				type: 'POST',
+				enctype: 'multipart/form-data',
+				//              beforeSend: function(){},
+				success: function(data, el) {
+					$('#tb tr:gt(0)').remove(); //删除之前的数据
+					var ok;
+					if(data.success) {
+						ok = "上传成功";
+						alert(ok);
+						location.reload();
+						
+					} else {
+						ok = "上传失败：" + data.errmsg
+					}
+					//生成导入信息
+					// var s = '';
+					// s += '<tr><td>' + data.success + '</td><td></td><td></td>' +
+					// 	'<td></td></tr>';
+					// $('#tb tbody').append(s);
+					//如果有失败条数自动生成表格
+					// if(data.data.ErrCount != 0) {
+					// 	$('#tbb tr:gt(0)').remove(); //删除之前的数据
+					// 	var sb = '';
+					// 	for(var i = 0; i < data.data.ErrInfo.length; i++) {
+					// 		sb += '<tr><td>' + eval(i + 1) + '</td><td>' + data.data.ErrInfo[i].Objname + '</td><td>' + data.data.ErrInfo[i].Info + '</td>' +
+					// 			'<td>' + data.data.ErrInfo[i].Time + '</td></tr>';
+					// 	}
+					// 	$('#tbb tbody').append(sb);
+					// }
+					var parent = el.find(".jFiler-jProgressBar").parent();
+					el.find(".jFiler-jProgressBar").fadeOut("slow", function() {
+						if(data.success) {
+							$("<div class=\"jFiler-item-others text-success\"><i class=\"icon-jfi-check-circle\"></i>"+ok+"</div>").hide().appendTo(parent).fadeIn("slow");
+							 $(".text-success").css({
+								"position":"absolute",
+								"top":"-55px",
+								"left":"420px"
+							});
+						} else {
+							console.log(data.errmsg);
+							$("<div class=\"jFiler-item-others text-error\" style=\"color:#e92322;\"><i class=\"icon-jfi-minus-circle\"></i>"+ok+"</div>").hide().appendTo(parent).fadeIn("slow");
+							$(".text-error").css({
+								"position":"absolute",
+								"top":"-19px",
+								"left":0
+							});
+						}
+					});
+					console.log(data);
+				},
+				error: function(el) {
+					var parent = el.find(".jFiler-jProgressBar").parent();
+					el.find(".jFiler-jProgressBar").fadeOut("slow", function() {
+						$("<div class=\"jFiler-item-others text-error\"><i class=\"icon-jfi-minus-circle\"></i> 上传失败</div>").hide().appendTo(parent).fadeIn("slow");
+					});
+				},
+				statusCode: null,
+				onProgress: null,
+				onComplete: null
+			},
+		});
+	
+</script>
+</body>
+
+</html>

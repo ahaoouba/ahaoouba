@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title style="color:green;display:block;text-align:center;">后台管理</title>
+		<!--文件上传-->
+		
+		<link href="/static/css/jquery.filer.css" type="text/css" rel="stylesheet" />
+		<link href="/static/css/bootstrap-select.min.css" type="text/css" rel="stylesheet" />
+		<script src="/static/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/static/js/fileupload/jquery.filer.min.js" type="text/javascript" charset="utf-8"></script>
+		<!--文件上传-->
+		<link href="/static/vendor/css/bootstrap.min.css" rel="stylesheet" />
+		<link type="text/css" href="/static/css/common.css" rel="stylesheet">
+		<link href="/static/css/base.css" rel="stylesheet" type="text/css" />
+		<link href="/static/css/doc.css" rel="stylesheet" type="text/css" />
+		
+		<!--树型菜单-->
+		<link rel="stylesheet" type="text/css" href="/static/z-tree/css/zTreeStyle/zTreeStyle.css" />
+		
+		
+
+		<script src="/static/vendor/js/bootstrap.min.js"></script>
+		<script src="/static/js/bootstrap-select.js"></script>
+		<script src="/static/js/common.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/static/js/drag.js" type="text/javascript" charset="utf-8"></script>
+		<!--格式化XML-->
+		<!--<script src="/static/js/xml.js" type="text/javascript" charset="utf-8"></script>-->
+		<script src="/static/js/format.js" type="text/javascript" charset="utf-8"></script>
+		<!--树型菜单-->
+		<script src="/static/z-tree/js/jquery.ztree.core.js" type="text/javascript" charset="utf-8"></script>
+		
+		<!--下拉二级菜单-->
+		<script type="text/javascript" src="/static/js/google-maps.js" charset="utf-8"></script>
+		<script>
+	function show(){
+		$.ajax({
+				url: "/index/linetime",
+				type: 'GET',
+				dataType: "json",
+				data: {
+					
+			},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						
+						
+					} else {
+						
+					}
+				},
+				error: function() {
+					
+				}
+			});/**/
+	}	
+		
+			
+			$(function(){
+		
+document.oncontextmenu = new Function("event.returnValue=false;");
+document.onselectstart = new Function("event.returnValue=false;");			
+setInterval(show,1000*100);// 注意函数名没有引号和括弧！ 
+
+});
+ 
+		</script>
+	</head>
+	<body>
+		<div class="navbar">
+			<div class="navbar-inner" style="background: rgb(118, 137, 152);">
+				<div class="navbar-container">
+					<div class="navbar-header pull-left">
+						<a href="/index/admin" class="navbar-brand">后台管理</a>
+					</div>
+					{{if ne $.username ""}}
+					<div class="navbar-header pull-right" >
+						<a href="/index/index" class="navbar-brand" style="font-size:20px;padding-left:0;">[博客主页]</a>
+					</div>
+					<div class="navbar-header pull-right" >
+						<a href="/index/tlogin" class="navbar-brand" style="font-size:20px;padding-left:0;">[退出登录]</a>
+					</div>
+					<div class="navbar-header pull-right" >
+						<div  class="navbar-brand" style="font-size:20px;">欢迎 {{$.username}}</div>
+						
+					</div>
+					
+					{{end}}
+				</div>
+			</div>
+		</div>
+		<div style="clear:both"></div>

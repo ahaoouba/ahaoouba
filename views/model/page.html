@@ -1,0 +1,51 @@
+{{if .page }}
+
+<nav aria-label="Page navigation" class="page-nav">
+	<ul class="pagination">
+		<!--至首页-->
+		<li class="">
+			<a href="{{$.page.Link 1}}" aria-label="">
+				<span aria-hidden="true">首页</span>
+			</a>
+		</li>
+		{{if .page.HasPreview}}
+		<li>	
+			<a href="{{$.page.PreviewLink}}" aria-label="Previous">
+				<span aria-hidden="true" class="glyphicon glyphicon-menu-left"></span>
+			</a>	
+		</li>
+		{{else}}
+		<!--<li class="disabled">
+			{{if $.page.Link 1}}
+			<a href="javascript:void(0);" aria-label="Previous">
+				<span aria-hidden="true" class="glyphicon glyphicon-menu-left"></span>
+			</a>
+			{{else}}
+			<a href="{{$.page.PreviewLink}}" aria-label="Previous">
+				<span aria-hidden="true" class="glyphicon glyphicon-menu-left"></span>
+			</a>
+			{{end}}
+		</li>-->
+		{{end}} 
+		{{range $index, $page := .page.Pages}}
+		<li>
+			<a href="{{$.page.Link $page}}">{{$page}}</a>
+		</li>
+		{{end}} {{if .page.HasNext}}
+		<li>
+			<a href="{{$.page.NextLink}}" aria-label="Next">
+				<span aria-hidden="true" class="glyphicon glyphicon-menu-right"></span>
+			</a>
+		</li>
+		{{else}}
+		
+		{{end}}
+		<!--至末页-->
+		<li class="">
+			<a href="{{$.page.Link .page.TotalPage}}" aria-label="">
+				<span aria-hidden="true">末页</span>
+			</a>
+		</li>
+	</ul>
+</nav>
+{{end}}

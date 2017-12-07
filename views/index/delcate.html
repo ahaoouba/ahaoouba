@@ -1,0 +1,169 @@
+{{template "/model/head.html" .}}
+<div class="container-fluid  main-container">
+	<div class="row">
+		{{template "/model/menu.html" .}}
+		<div class="col-md-8" style="margin-top:50px;">
+				<div class="form-group">
+					<label class="col-md-2 control-label">请选择要删除的类目：</label>
+					<div class="col-md-2">
+
+						<div class="gpick pr">
+							<span id="addobjectButton" class="select-text" value="">请选择</span>
+							<span class="c-caret" style="right: 7px;"></span>
+							<ul class="vertical-nav pa ul1" style="display: none;top: 32px;left: -1px;">
+								
+									
+							</ul>
+						</div>
+					</div>
+				</div>
+			<div class="form-group" style="margin-top:300px;">
+						<label class="col-md-2 control-label"></label>
+						<div class="col-md-1">
+							<input  value="删除" onclick="Catedel()" class="btn btn-primary">
+						</div>
+					</div>
+			</div>
+	</div>
+	<input type="hidden" value="" id="cid"/>
+</div>
+<!--删除模态框-->
+<div class="modal fade" id="modal1" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">删除</h4>
+			</div>
+			<div class="modal-body">
+				<p>删除该类目会一并删除该类目下的所有子类目以及文章!</p>
+			</div>
+			<div class="modal-footer">
+				<div class="btn btn-success" id="J-btn-del">确定</div>
+				<div class="btn btn-default" data-dismiss="modal">取消</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+function Catedel(){
+	$('#modal1').modal('show');
+}
+$("#J-btn-del").click(function(){
+	cid=$("#cid").val();
+	if(cid==""){
+		alert("目标分类必选!");
+		return false;
+	}
+	$.ajax({
+				url: "/index/catedelajax",
+				type: 'GET',
+				dataType: "json",
+				data: {
+					cid:cid,
+					
+				},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						alert(data.msg);
+						location.reload();
+						
+					} else {
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("删除类目失败，请稍后再试！");
+				}
+			});/**/
+});
+$.ajax({
+				url: "/index/catemodel",
+				type: 'GET',
+				dataType: "json",
+				data: {
+					
+					
+				},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						if (data.data==null){
+							
+							return false;
+						}
+						Addbq(data.data);
+						
+						
+					} else {
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("分类获取失败，请稍后再试！");
+				}
+			});/**/
+	
+	//
+	function Addbq(data){
+		var $a=[];
+		for(i=0;i<data.length;i++){
+			
+			$b='<li  id='+data[i].id+' class='+data[i].pid+'><a onclick=xzbq("'+data[i].name+'",'+data[i].id+','+data[i].pid+');>'+data[i].name+'</a><ul></ul></li>';
+			$a.push($b);
+			if ($($a[i]).attr("class")==-1){
+				$(".pa").append($a[i]);
+			}
+		}
+		for(i=0;i<data.length;i++){
+			//var id=$($a[i]).attr("id");
+			var pid=$($a[i]).attr("class");
+			if(pid!=-1){
+				for(j=0;j<data.length;j++){
+					if( $(($a[j])).attr("id") == pid ){
+						var $c="#"+$(($a[j])).attr("id")+">ul";
+						$($c).append($a[i]);
+					}
+				}
+			}
+		}
+		
+	}
+	
+	
+	
+	/*二级下拉菜单*/
+		$(".vertical-nav").verticalnav({});
+
+		/*二级下拉菜单显隐藏*/
+		$('#addobjectButton').click(function(e) {
+			if($('.vertical-nav').is(":hidden")) {
+				$('.vertical-nav').show();
+				console.log(1);
+			} else {
+				$('.vertical-nav').hide();
+				console.log(2);
+			}
+			e.stopPropagation();
+			$(document).click(function() {
+				$('.vertical-nav').hide();
+			});
+		});
+		//为三级菜单加上右箭头
+		$(".vertical-nav>li").children('ul:has(li)').each(function() {
+			$(this).siblings('a').append($('<span class="glyphicon glyphicon-menu-right" style="position: absolute;right: 4px;top: 12px;"></span>'));
+			$(this).find('li').children('ul:has(li)').each(function() {
+				$(this).siblings('a').append($('<span class="glyphicon glyphicon-menu-right" style="position: absolute;right: 4px;top: 12px;"></span>'));
+			});
+		});
+		$('.c-menu-item:eq(0)').find('.sub-menu .sub-menu-item:eq(0) a').addClass('menu-cover');
+function xzbq(name,id,pid){
+	$("#addobjectButton").text(name);
+	$("#cid").val(id);
+}
+	
+</script>
+</body>
+
+</html>
