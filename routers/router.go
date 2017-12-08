@@ -23,6 +23,8 @@ func init() {
 		//登录页面
 		beego.NSRouter("login", &controllers.IndexController{}, "GET:Login"),
 		beego.NSRouter("tlogin", &controllers.IndexController{}, "GET:TuichuLogin"),
+		//登录短信验正码
+		beego.NSRouter("logmessage", &controllers.IndexController{}, "POST:LogMessage"),
 		//更新用户在线时间
 		beego.NSRouter("linetime", &controllers.IndexController{}, "GET:LineTime"),
 		//登录ajax
