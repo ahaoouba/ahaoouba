@@ -120,10 +120,10 @@
 	</div>
 </div>
 <input type="hidden" value="{{$.username}}" id="tk_username"/>
-<script src="/community_dashboard/v1/static/js/ckeditor/ckeditor.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/ckeditor/ckeditor.js" type="text/javascript" charset="utf-8"></script>
 <!--发送消息模态框结束-->
 <script type="text/javascript">
-
+var myeditor;
 	function ModUser(id,name,auth){
 		$('#modal1').modal('show');
 		$("#username").val(name);
@@ -233,7 +233,9 @@
 		},350);
 		$('#modal2').modal('show');
 		
-		
+		 myeditor = CKEDITOR.replace('context', {
+			customConfig: '/static/js/ckeditor/config.js'
+		});
 	}
 	$(document).keyup(function(event){
 		switch(event.keyCode){
@@ -246,19 +248,19 @@
 		}
 	});
 	
-	var myeditor = CKEDITOR.replace('context', {
-		customConfig: '/static/js/ckeditor/config.js'
-	});
+	
 
 	
 $("#J-btn-fs").click(function(){
-	context = $("#context").val();
+	var content = myeditor.document.getBody().getHtml(); //html格式
+	var contenttxt = myeditor.document.getBody().getText(); //文本格式
+	
+//	context = $("#context").val();
 	jsuname = $("#tk_username").val();
 	fsuname = $("#talkdx").text();
-	context=context.replace(/(^\s*)|(\s*$)/g, "");
-	context=context.replace(/[\r\n]/g, "");
-	if (context==""){
-		
+	contenttxt=contenttxt.replace(/(^\s*)|(\s*$)/g, "");
+	contenttxt=contenttxt.replace(/[\r\n]/g, "");
+	if (contenttxt==""&&!(content.indexOf("img")>=0)){
 		return false;
 	}
 	 if(jsuname==""){
@@ -269,7 +271,8 @@ $("#J-btn-fs").click(function(){
 		alert("发送者异常!");
 		return false;
 	}
-	$("#context").val("");
+	myeditor.document.getBody().setText("");
+	myeditor.document.getBody().setHtml("");
 	$.ajax({
 			url: "/index/addtalk",
 			type: 'POST',
@@ -277,7 +280,7 @@ $("#J-btn-fs").click(function(){
 			data: {
 				jsuname:$("#talkdx").text(),
 				fsuname:$("#tk_username").val(),
-				context:context,
+				context:content,
 				qingqiuren:$("#tk_username").val(),
 			},
 			async: false,
@@ -293,7 +296,7 @@ $("#J-btn-fs").click(function(){
 });
 $(function(){
 	ishaveNewMessage();	
-	var ws = new WebSocket('ws://192.168.10.23:8800/index/ws');
+	var ws = new WebSocket('ws://127.0.0.1:8800/index/ws');
 		ws.onmessage = function(e) {
 			var jsonstr = $.parseJSON(e.data);
 			var str=jsonstr.Message;
