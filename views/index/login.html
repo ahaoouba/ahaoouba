@@ -63,6 +63,12 @@
 							<label for="email" class="sr-only">密码</label>
 							<input type="password" class="form-control" id="password" placeholder="密码" autocomplete="off">
 						</div>
+						<div class="form-group" style="position:relative;">
+							<label for="email" class="sr-only">PhoneNumber</label>
+							<input  id="code" class="form-control" style="display:inline;" placeholder="验证码">
+							<button type="button" class="btn btn-small get-code"  id="J_getCode" style="position:absolute;top:0;right:0;">获取验证码</button>
+							<button type="button" class="btn btn-small reset-code" id="J_resetCode" style="display:none;position:absolute;top:0;right:0;" ><span id="J_second">30</span>s后重新获取</button>
+						</div>
 						<div class="form-group">
 							<p>么有账号?<a href="/index/reg">注册</a> </p>
 						</div>
@@ -93,6 +99,7 @@
 function lg(){
 	var name=$("#name").val();
 	var password=$("#password").val();
+	var code=$("#code").val();
 	if (name==""){
 		alert("用户名不能为空!");
 		return false;
@@ -101,7 +108,10 @@ function lg(){
 		alert("密码不能为空!");
 		return false;
 	}
-	
+	if (code==""){
+		alert("验正码不能为空!");
+		return false;
+	}
 	
 	$.ajax({
 				url: "/index/loginajax",
@@ -109,10 +119,8 @@ function lg(){
 				dataType: "json",
 				data: {
 					name:name,
-					
-					password: password,
-					
-					
+					password:password,
+					code:code,
 				},
 				async: false,
 				success: function(data) {
@@ -128,6 +136,60 @@ function lg(){
 					alert("登录失败，请稍后再试！");
 				}
 			});/**/
+}
+$("#J_getCode").click(function(){
+	var name=$("#name").val();
+	var password=$("#password").val();
+	if (name==""){
+		alert("请先填写账号!");
+		return false;
+	}
+	if(password==""){
+		alert("请先填写密码!");
+		return false;
+	}
+	resetCode(); //倒计时
+	$.ajax({
+				url: "/index/logmessage",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					name:name,
+					password:password,
+				},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						$("#code").attr("placeholder","验证码已成功发送");
+					} else {
+						$("#code").attr("placeholder",data.errmsg);
+						
+					}
+				},
+				error: function() {
+					alert("发送失败，请稍后再试！");
+				}
+
+			});/**/
+});
+//倒计时
+function resetCode(){
+	$('#J_getCode').hide();
+	$("#J_resetCode").attr("disabled", true); 
+	$('#J_second').html('30');
+	$('#J_resetCode').show();
+	var second = 30;
+	var timer = null;
+	timer = setInterval(function(){
+		second -= 1;
+		if(second >0 ){
+			$('#J_second').html(second);
+		}else{
+			clearInterval(timer);
+			$('#J_getCode').show();
+			$('#J_resetCode').hide();
+		}
+	},1000);
 }
 </script>
 	</body>

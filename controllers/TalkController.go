@@ -147,6 +147,7 @@ func (this *TalkController) GetNewMessage() {
 
 //websoket请求链接
 func (this *TalkController) Ws() {
+	base.CheckLogin(this.Controller)
 	upgrader.CheckOrigin = func(Request *http.Request) bool {
 		return true
 	}

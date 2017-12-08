@@ -25,7 +25,6 @@ func (this *IndexController) Get() {
 	this.TplName = "index/reg.html"
 }
 func (this *IndexController) Reg() {
-
 	ar := ajax.NewAjaxResult()
 	this.Data["json"] = ar
 	u := new(models.User)
@@ -109,6 +108,14 @@ func (this *IndexController) TuichuLogin() {
 	if err != nil {
 		beego.Error(err)
 	}
+	err = models.UpdateLinetime(userid, "")
+	if err != nil {
+		beego.Error(err)
+	}
+	err = models.UpdateIslogin(userid, "true")
+	if err != nil {
+		beego.Error(err)
+	}
 	this.DelSession("userid")
 	this.DelSession("username")
 	this.DelSession("auth")
@@ -126,6 +133,25 @@ func (this *IndexController) LoginAjax() {
 	op.Name = this.GetString("name", "")
 
 	op.Password = this.GetString("password", "")
+	code, _ := this.GetInt("code")
+	var yzm int
+	yzmbyt := make([]byte, 0)
+	yzmbyt, err := json.Marshal(this.GetSession("login_yzm"))
+	if err != nil {
+		beego.Error(err)
+		return
+	}
+	err = json.Unmarshal(yzmbyt, &yzm)
+	if err != nil {
+		beego.Error(err)
+		return
+	}
+	if yzm != code {
+		ar.SetError(fmt.Sprintf("验正码错误!"))
+		beego.Error(ar.Errmsg)
+		this.ServeJSON()
+		return
+	}
 	num, u, err := models.QueryUserInfo(op)
 	if err != nil {
 		ar.SetError(fmt.Sprintf("登录失败，错误内容为：[ %s ]", err.Error()))
@@ -141,10 +167,22 @@ func (this *IndexController) LoginAjax() {
 	}
 
 	if u[0].Islogin == "true" {
-		ar.SetError(fmt.Sprintf("该账号已在其他地点登陆,请联系阿浩欧巴及时修改密码。"))
-		beego.Error(ar.Errmsg)
-		this.ServeJSON()
-		return
+		ss, err := beego.GlobalSessions.GetSessionStore(u[0].Sessionid)
+		if err != nil {
+			beego.Error(err)
+		}
+		err = ss.Delete("userid")
+		if err != nil {
+			beego.Error(err)
+		}
+		err = ss.Delete("username")
+		if err != nil {
+			beego.Error(err)
+		}
+		err = ss.Delete("auth")
+		if err != nil {
+			beego.Error(err)
+		}
 	}
 	//	oop := new(models.QueryUserOption)
 	//	oop.BaseOptions = new(base.QueryOptions)
@@ -199,7 +237,9 @@ func (this *IndexController) LoginAjax() {
 	} else {
 		ar.Msg = "/index/index"
 	}
-
+	this.DelSession("login_yzm")
+	this.DelSession("phone")
+	this.DelSession("yzm")
 	this.ServeJSON()
 	return
 }
@@ -310,14 +350,20 @@ func CheckLoginStatus() error {
 		beego.Error(err)
 
 	}
+	var lt int64
 	for _, v := range users {
 		time := base.GetCurrentDataUnix()
-		lt, err := strconv.ParseInt(v.Linetime, 10, 64)
-		if err != nil {
-			beego.Error(err)
+		if v.Linetime == "" {
+			lt = 0
+		} else {
+			lt, err = strconv.ParseInt(v.Linetime, 10, 64)
+			if err != nil {
+				beego.Error(err)
 
+			}
 		}
-		if time-lt > 600 {
+
+		if time-lt > 1000 {
 			v.Islogin = "false"
 			err = models.UpdateIslogin(v.Id, v.Islogin)
 			if err != nil {
@@ -378,7 +424,71 @@ func (this *IndexController) Message() {
 	ok := smsutil.SendAndRecvOnce(sendobj)
 	this.SetSession("phone", mobile)
 	this.SetSession("yzm", yzmnum)
-	beego.Debug(ok)
-	ar.Success = true
+	if !ok {
+		ar.SetError(fmt.Sprintf("验正码发送失败!"))
+		beego.Error(ar.Errmsg)
+		this.ServeJSON()
+		return
+	}
+	ar.Success = ok
+	this.ServeJSON()
+}
+
+//登录短信这验证码
+func (this *IndexController) LogMessage() {
+	ar := ajax.NewAjaxResult()
+	this.Data["json"] = ar
+	username := this.GetString("name")
+	password := this.GetString("password")
+	if username == "" || password == "" {
+		ar.SetError(fmt.Sprintf("用户名/密码错误!"))
+		beego.Error(ar.Errmsg)
+		this.ServeJSON()
+		return
+	}
+	u := new(models.QueryUserOption)
+	bp := new(base.QueryOptions)
+	u.BaseOptions = bp
+	u.Name = username
+	u.Password = password
+	_, user, err := models.QueryUserInfo(u)
+	if err != nil {
+		ar.SetError(fmt.Sprintf("用户信息获取失败，错误内容为：[ %s ]", err.Error()))
+		beego.Error(ar.Errmsg)
+		this.ServeJSON()
+		return
+	}
+	if len(user) == 0 {
+		ar.SetError(fmt.Sprintf("用户名/密码错误!"))
+		beego.Error(ar.Errmsg)
+		this.ServeJSON()
+		return
+	}
+	mobile := user[0].Phone
+	//短信发送账号密码
+	userid := "E101I4"
+	pwd := "g5u0v4"
+	content := ""
+
+	r := rand.New(rand.NewSource(base.GetCurrentDataUnix()))
+	var yzmnum int
+	for i := 0; i < 6; i++ {
+		yzmnum = yzmnum*10 + r.Intn(10)
+	}
+
+	content = fmt.Sprintf("您的验证码是%d，在1分钟内输入有效。如非本人操作请忽略此短信。", yzmnum)
+
+	// 将数据打包
+	sendobj := smsutil.NewSingleSend(userid, pwd, mobile, content)
+	// 发送数据
+	ok := smsutil.SendAndRecvOnce(sendobj)
+	this.SetSession("login_yzm", yzmnum)
+	if !ok {
+		ar.SetError(fmt.Sprintf("验正码发送失败!"))
+		beego.Error(ar.Errmsg)
+		this.ServeJSON()
+		return
+	}
+	ar.Success = ok
 	this.ServeJSON()
 }
