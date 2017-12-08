@@ -19,7 +19,8 @@ CKEDITOR.editorConfig = function( config )
     ];     
 
     config.image_previewText=' ';
-	
+	config.resize_enabled= true ;
+	config.height=100;
 	config.filebrowserImageUploadUrl= "/article/uploadimg"; //待会要上传的action或servlet
 	config.removePlugins = 'elementspath';
 	config.removeDialogTabs = 'image:advanced;image:Link';
