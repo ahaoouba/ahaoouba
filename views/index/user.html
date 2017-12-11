@@ -283,8 +283,8 @@ $("#J-btn-fs").click(function(){
 	contenttxt=contenttxt.replace(/[\r\n]/g, "");
 	content=content.replace(/(^\s*)|(\s*$)/g, "");
 	content=content.replace(/[\r\n]/g, "");
-	contenttxt=contenttxt.replace("<p><br></p>","");
-	content=content.replace("<p><br></p>","");
+	contenttxt=contenttxt.replace(/<p><br><\/p>/g,"");
+	content=content.replace(/<p><br><\/p>/g,"");
 	
 	if (contenttxt==""&&!(content.indexOf("img")>=0)){
 		return false;
