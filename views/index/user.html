@@ -229,14 +229,35 @@ var myeditor;
 			});/**/
 		//浏览器输出结果是0；
 		setTimeout(function(){
-			document.getElementById('talkbody').scrollTop = 10000;
+			document.getElementById('talkbody').scrollTop = 1000000;
 		},350);
 		$('#modal2').modal('show');
 		
 		 myeditor = CKEDITOR.replace('context', {
 			customConfig: '/static/js/ckeditor/config.js'
 		});
+		
+			CKEDITOR.on("instanceReady", function(e){
+
+  			CKEDITOR.instances.context.document.$.body.onkeydown = function(e) {
+
+    		if(e.keyCode==13){
+				$("#J-btn-fs").click();
+				
+			} 
+			if(e.keyCode==27){
+				$("#gbck").click();
+				
+			} 
+    
+
+  			}
+
+		})
+
 	}
+	
+	
 	$(document).keyup(function(event){
 		switch(event.keyCode){
 			case 27:
@@ -260,6 +281,11 @@ $("#J-btn-fs").click(function(){
 	fsuname = $("#talkdx").text();
 	contenttxt=contenttxt.replace(/(^\s*)|(\s*$)/g, "");
 	contenttxt=contenttxt.replace(/[\r\n]/g, "");
+	content=content.replace(/(^\s*)|(\s*$)/g, "");
+	content=content.replace(/[\r\n]/g, "");
+	contenttxt=contenttxt.replace(/<p><br><\/p>/g,"");
+	content=content.replace(/<p><br><\/p>/g,"");
+	
 	if (contenttxt==""&&!(content.indexOf("img")>=0)){
 		return false;
 	}
@@ -296,7 +322,7 @@ $("#J-btn-fs").click(function(){
 });
 $(function(){
 	ishaveNewMessage();	
-	var ws = new WebSocket('ws://127.0.0.1:8800/index/ws');
+	var ws = new WebSocket('ws://192.168.10.23:8800/index/ws');
 		ws.onmessage = function(e) {
 			var jsonstr = $.parseJSON(e.data);
 			var str=jsonstr.Message;
@@ -323,7 +349,8 @@ $(function(){
 										}
 							}
 							/////
-							$("#talkbody").scrollTop(10000);
+							$("#talkbody").scrollTop(1000000);
+							
 							///
 							$.ajax({
 							url: "/index/talks",
