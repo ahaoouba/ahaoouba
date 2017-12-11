@@ -231,29 +231,12 @@ var myeditor;
 		setTimeout(function(){
 			document.getElementById('talkbody').scrollTop = 1000000;
 		},350);
+		
+		
+		 
+		
+			
 		$('#modal2').modal('show');
-		
-		 myeditor = CKEDITOR.replace('context', {
-			customConfig: '/static/js/ckeditor/config.js'
-		});
-		
-			CKEDITOR.on("instanceReady", function(e){
-
-  			CKEDITOR.instances.context.document.$.body.onkeydown = function(e) {
-
-    		if(e.keyCode==13){
-				$("#J-btn-fs").click();
-				
-			} 
-			if(e.keyCode==27){
-				$("#gbck").click();
-				
-			} 
-    
-
-  			}
-
-		})
 
 	}
 	
@@ -321,6 +304,26 @@ $("#J-btn-fs").click(function(){
 	});/**/
 });
 $(function(){
+	myeditor = CKEDITOR.replace('context', {
+			customConfig: '/static/js/ckeditor/config.js'
+		});
+		CKEDITOR.on("instanceReady", function(e){
+
+  			CKEDITOR.instances.context.document.$.body.onkeydown = function(e) {
+
+    		if(e.keyCode==13){
+				$("#J-btn-fs").click();
+				
+			} 
+			if(e.keyCode==27){
+				$("#gbck").click();
+				
+			} 
+    
+
+  			}
+
+		})
 	ishaveNewMessage();	
 	var ws = new WebSocket('ws://192.168.10.23:8800/index/ws');
 		ws.onmessage = function(e) {
