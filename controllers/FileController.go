@@ -18,7 +18,7 @@ type FileController struct {
 	beego.Controller
 }
 
-//获取文件列表
+//文件添加页面
 func (this *FileController) AddFilePage() {
 	base.CheckLogin(this.Controller)
 	this.TplName = "index/fileadd.html"

@@ -62,6 +62,10 @@ func init() {
 		beego.NSRouter("delmusic", &controllers.MusicController{}, "POST:DelMusic"),
 		//视频管理
 		beego.NSRouter("videoadd", &controllers.VideoController{}, "GET:VideoAddPage"),
+		beego.NSRouter("videoadd", &controllers.VideoController{}, "POST:VideoAddAjax"),
+		beego.NSRouter("video", &controllers.VideoController{}, "GET:GetVideoList"),
+		beego.NSRouter("videodel", &controllers.VideoController{}, "POST:DelVideo"),
+		beego.NSRouter("videoplay", &controllers.VideoController{}, "GET:VideoPlayPage"),
 		//文件管理
 		beego.NSRouter("fileadd", &controllers.FileController{}, "GET:AddFilePage"),
 		beego.NSRouter("fileadd", &controllers.FileController{}, "POST:AddFile"),
