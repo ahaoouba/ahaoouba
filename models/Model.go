@@ -28,7 +28,7 @@ func InitDB() {
 	dburl = fmt.Sprintf(dburl,
 		"root",
 		"123456",
-		"127.0.0.1",
+		"192.168.216.129",
 		3306,
 		"ahaooubabk",
 		"utf8")
