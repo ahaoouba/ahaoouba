@@ -39,12 +39,18 @@ func QueryLiveInfo(opt *QueryLiveOptions) (int, []*Live, error) {
 	if opt.Id != 0 {
 		cond = cond.And("id", opt.Id)
 	}
-	if opt.Userid != "" {
+	if opt.Userid != 0 {
 		cond = cond.And("userid", opt.Userid)
 	}
 	if opt.Code != "" {
 		cond = cond.And("code", opt.Code)
 	}
 	qs = qs.SetCond(cond)
-	qs.Limit(opt.Limit).Offset(opt.Offset).All()
+	l := make([]*Live, 0)
+	num, err := qs.Count()
+	if err != nil {
+		return 0, nil, err
+	}
+	_, err = qs.Limit(opt.Limit).Offset(opt.Offset).All(&l)
+	return int(num), l, err
 }
