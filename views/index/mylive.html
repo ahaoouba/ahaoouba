@@ -1,0 +1,124 @@
+{{template "/model/head.html" .}}
+<div class="container-fluid  main-container">
+	<div class="row">
+		{{template "/model/menu.html" .}}
+		<div class="page-content" style="margin-left: 260px;">
+			<div class="form-horizontal" style="margin-top:20px;">
+				<div class="col-md-8">
+					<div class="form-group">
+						<label class="col-md-2 control-label">昵称：</label>
+						<div class="col-md-4" >
+							<div class="form-control"  id="nickname">{{$.lives.Nickname}}</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">标签：</label>
+						<div class="col-md-4">
+							<div class="form-control"  id="label">{{$.lives.Label}}</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">简介：</label>
+						<div class="col-md-4">
+							<div class="form-control"  id="info">{{$.lives.Info}}</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">推流密码：</label>
+						<div class="col-md-4">
+							<input class="form-control"  id="code" value="{{$.lives.Code}}"/>
+						</div>
+					</div>
+					
+					
+					<div class="form-group">
+						<label class="col-md-2 control-label"></label>
+						<div class="col-md-1">
+							<button  id="opli" onclick="openlive()" class='btn {{if eq $.lives.Islive "false"}}btn-success{{else}}btn-danger {{end}}' style="width:100px;">开启直播</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</div>
+<!--删除模态框-->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">删除</h4>
+			</div>
+			<div class="modal-body">
+				<p>确定删除该记录吗？</p>
+			</div>
+			<div class="modal-footer">
+				<div class="btn btn-success" id="J-btn-del">确定</div>
+				<div class="btn btn-default" data-dismiss="modal">取消</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+
+function openlive(){
+	cla = $("#opli").attr("class").split(" ")[1]
+	if (cla=="btn-success"){
+		$.ajax({
+				url: "/index/startstoplive",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					islive:"true"
+				},
+				async: false,
+				success: function(data) {
+					if (data.success){
+						$("#opli").addClass("btn-danger");
+						$("#opli").removeClass("btn-success");
+						$("#opli").text("关闭直播");
+						alert("开启成功，可以推流了!");
+					}else{
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("申请直播间发生异常，请稍后再试！");
+				}
+			});/**/
+		
+	}else{
+		$.ajax({
+				url: "/index/startstoplive",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					islive:"false"
+				},
+				async: false,
+				success: function(data) {
+					if (data.success){
+						$("#opli").addClass("btn-success");
+						$("#opli").removeClass("btn-danger");
+						$("#opli").text("开启直播");
+						alert("关闭成功，请关闭推流软件!");
+					}else{
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("关闭直播间发生异常，请稍后再试！");
+				}
+			});/**/
+		
+	}
+	
+	
+}
+	
+</script>
+</body>
+
+</html>

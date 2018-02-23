@@ -1,0 +1,98 @@
+{{template "/model/head.html" .}}
+<div class="container-fluid  main-container">
+	<div class="row">
+		{{template "/model/menu.html" .}}
+		<div class="page-content" style="margin-left: 260px;">
+			<div class="form-horizontal" style="margin-top:20px;">
+				<div class="col-md-8">
+					<div class="form-group">
+						<label class="col-md-2 control-label">昵称：</label>
+						<div class="col-md-4">
+							<input class="form-control"  id="nickname" type="text" value="" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">标签：</label>
+						<div class="col-md-4">
+							<input class="form-control"  id="label" type="text" value="" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">简介：</label>
+						<div class="col-md-4">
+							<input class="form-control"  id="info" type="text" value="" />
+						</div>
+					</div>
+					
+					
+					
+					<div class="form-group">
+						<label class="col-md-2 control-label"></label>
+						<div class="col-md-1">
+							<input  value="确认" onclick="liveadd()" class="btn btn-primary" style="width:100px;"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</div>
+<!--删除模态框-->
+<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">删除</h4>
+			</div>
+			<div class="modal-body">
+				<p>确定删除该记录吗？</p>
+			</div>
+			<div class="modal-footer">
+				<div class="btn btn-success" id="J-btn-del">确定</div>
+				<div class="btn btn-default" data-dismiss="modal">取消</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	function liveadd(){
+		var nickname	=	$("#nickname").val();
+		var label		=	$("#label").val();
+		var info 		=	$("#info").val();
+		if (nickname==""){
+			alert("昵称不能为空！");
+			return false;
+		}else if(label==""){
+			alert("标签不能为空！");
+			return false;
+		}else{
+			$.ajax({
+				url: "/index/liveadd",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					nickname:nickname,
+					label:label,
+					info:info,	
+				},
+				async: false,
+				success: function(data) {
+					if (data.success){
+						alert("申请成功!");
+						location.reload();
+					}else{
+						alert(data.errmsg);
+					}
+				},
+				error: function() {
+					alert("申请直播间发生异常，请稍后再试！");
+				}
+			});/**/
+		}	
+	}
+</script>
+</body>
+
+</html>
