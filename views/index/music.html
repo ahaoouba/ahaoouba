@@ -37,7 +37,7 @@
 						<td>{{$v.Name}}</td>
 						<td>{{$v.Path}}</td>
 						<td>
-						<audio id="{{$v.Id}}" class="btn btn-default gdel aud" style="padding:0;" src="/{{$v.Path}}" controls="controls" loop="false" ></audio>
+						<audio id="{{$v.Id}}" preload="none" class="btn btn-default gdel aud" style="padding:0;" src="/{{$v.Path}}" controls="controls" loop="false" ></audio>
 							<!--<button class="btn btn-default gdel" onclick=st({{$v.Id}})>
 								试听
 							</button>-->

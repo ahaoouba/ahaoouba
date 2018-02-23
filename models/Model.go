@@ -24,10 +24,11 @@ func InitDB() {
 		os.Exit(1)
 	}
 	dburl := "%s:%s@tcp(%s:%d)/%s?charset=%s"
-
+	//"172.17.0.2",
 	dburl = fmt.Sprintf(dburl,
 		"root",
 		"123456",
+
 		"127.0.0.1",
 		3306,
 		"ahaooubabk",

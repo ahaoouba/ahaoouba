@@ -83,6 +83,16 @@ func init() {
 		//websoket
 		beego.NSRouter("ws", &controllers.TalkController{}, "GET:Ws"),
 		///////////
+		//直播管理
+		//申请直播页面
+		beego.NSRouter("liveaddpage", &controllers.LiveController{}, "GET:AddLiveinfoPage"),
+		//申请直播ajax
+		beego.NSRouter("liveadd", &controllers.LiveController{}, "POST:AddLiveinfoAjax"),
+		//用户本人直播间信息
+		beego.NSRouter("myliveinfo", &controllers.LiveController{}, "GET:QueryLiveInfo"),
+		//修改用户直播状态
+		beego.NSRouter("startstoplive", &controllers.LiveController{}, "POST:UpdateLiveInfo"),
+		//
 		//前台
 		////////////////
 		///////////////

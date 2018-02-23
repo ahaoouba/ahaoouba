@@ -16,12 +16,6 @@ func main() {
 	checklogintask := toolbox.NewTask("checklogintasks", "0/10 * * * * *", controllers.CheckLoginStatus)
 	toolbox.AddTask("checklogintasks", checklogintask)
 	toolbox.StartTask()
-	beego.SetStaticPath("index/staticsd", "stasstic")
-	for k, v := range beego.BConfig.WebConfig.StaticDir {
-		beego.Debug(k)
-		beego.Debug(v)
-	}
 	//////
-	beego.Run("192.168.10.23:8800")
-
+	beego.Run("0.0.0.0:8800")
 }
