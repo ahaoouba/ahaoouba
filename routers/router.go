@@ -92,6 +92,8 @@ func init() {
 		beego.NSRouter("myliveinfo", &controllers.LiveController{}, "GET:QueryLiveInfo"),
 		//修改用户直播状态
 		beego.NSRouter("startstoplive", &controllers.LiveController{}, "POST:UpdateLiveInfo"),
+		//直播大厅
+		beego.NSRouter("livehall", &controllers.LiveController{}, "GET:LiveHall"),
 		//
 		//前台
 		////////////////

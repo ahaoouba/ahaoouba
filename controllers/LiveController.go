@@ -94,7 +94,6 @@ func (this *LiveController) UpdateLiveInfo() {
 	base.CheckLogin(this.Controller)
 	ar := ajax.NewAjaxResult()
 	this.Data["json"] = ar
-
 	l := new(models.Live)
 	if this.GetString("islive", "") == "true" {
 		l.Islive = "true"
@@ -122,4 +121,10 @@ func (this *LiveController) UpdateLiveInfo() {
 	}
 	ar.Success = true
 	this.ServeJSON()
+}
+
+//直播大厅
+func (this *LiveController) LiveHall() {
+	base.CheckLogin(this.Controller)
+	this.TplName = "index/livehall.html"
 }
