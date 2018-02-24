@@ -34,7 +34,7 @@
 					<div class="form-group">
 						<label class="col-md-2 control-label"></label>
 						<div class="col-md-1">
-							<button  id="opli" onclick="openlive()" class='btn {{if eq $.lives.Islive "false"}}btn-success{{else}}btn-danger {{end}}' style="width:100px;">开启直播</button>
+							<button  id="opli" onclick="openlive()" class='btn {{if eq $.lives.Islive "false"}}btn-success{{else}}btn-danger {{end}}' style="width:100px;">{{if eq $.lives.Islive "false"}}开启直播{{else}}关闭直播{{end}}</button>
 						</div>
 					</div>
 				</div>
