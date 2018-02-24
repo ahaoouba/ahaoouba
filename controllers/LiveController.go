@@ -127,4 +127,39 @@ func (this *LiveController) UpdateLiveInfo() {
 func (this *LiveController) LiveHall() {
 	base.CheckLogin(this.Controller)
 	this.TplName = "index/livehall.html"
+	opt := new(models.QueryLiveOptions)
+	bp := new(base.QueryOptions)
+	opt.QueryOptions = bp
+	opt.Islive = "true"
+	num, lives, err := models.QueryLiveInfo(opt)
+	if num == 0 {
+		return
+	}
+	if err != nil {
+		beego.Error(err)
+		return
+	}
+	this.Data["lives"] = lives
+}
+
+//进入直播间
+func (this *LiveController) LivePlayRoom() {
+	base.CheckLogin(this.Controller)
+	this.TplName = "index/liveplay.html"
+	id, err := this.GetInt64("id", 0)
+	if err != nil {
+		beego.Error(err)
+		return
+	}
+	opt := new(models.QueryLiveOptions)
+	bp := new(base.QueryOptions)
+	opt.QueryOptions = bp
+	opt.Id = id
+	_, l, err := models.QueryLiveInfo(opt)
+	if err != nil {
+		beego.Error(err)
+		return
+	}
+	this.Data["live"] = l[0]
+
 }

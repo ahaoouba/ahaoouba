@@ -94,6 +94,8 @@ func init() {
 		beego.NSRouter("startstoplive", &controllers.LiveController{}, "POST:UpdateLiveInfo"),
 		//直播大厅
 		beego.NSRouter("livehall", &controllers.LiveController{}, "GET:LiveHall"),
+		//进入直播间
+		beego.NSRouter("liveplay", &controllers.LiveController{}, "GET:LivePlayRoom"),
 		//
 		//前台
 		////////////////
