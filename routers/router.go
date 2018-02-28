@@ -96,7 +96,12 @@ func init() {
 		beego.NSRouter("livehall", &controllers.LiveController{}, "GET:LiveHall"),
 		//进入直播间
 		beego.NSRouter("liveplay", &controllers.LiveController{}, "GET:LivePlayRoom"),
-		//
+		////////////
+		//聊天室
+		///////////
+		beego.NSRouter("wstalkroom", &controllers.TalkRoomController{}, "GET:TalkRoom"),
+		beego.NSRouter("talkroommessages", &controllers.TalkRoomController{}, "POST:TalkRoomAddMessage"),
+		/////////////////
 		//前台
 		////////////////
 		///////////////
