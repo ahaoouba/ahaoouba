@@ -36,7 +36,6 @@
 						<td>{{if eq $v.Auth "admin"}}管理员{{else}}普通用户{{end}}</td>
 						<td>{{if eq $v.Islogin "true"}}<span style="color:green;">在线</span>{{else}}<span style="color:red;">离线</span>{{end}}</td>
 						<td>
-							
 							<button class="btn btn-default gdel" onclick="ModUser({{$v.Id}},{{$v.Name}},{{$v.Auth}})">
 								修改
 							</button>
@@ -231,13 +230,7 @@ var myeditor;
 		setTimeout(function(){
 			document.getElementById('talkbody').scrollTop = 1000000;
 		},350);
-		
-		
-		 
-		
-			
 		$('#modal2').modal('show');
-
 	}
 	
 	
@@ -258,18 +251,16 @@ var myeditor;
 $("#J-btn-fs").click(function(){
 	var content = myeditor.document.getBody().getHtml(); //html格式
 	var contenttxt = myeditor.document.getBody().getText(); //文本格式
-	
-//	context = $("#context").val();
 	jsuname = $("#tk_username").val();
 	fsuname = $("#talkdx").text();
-	contenttxt=contenttxt.replace(/(^\s*)|(\s*$)/g, "");
-	contenttxt=contenttxt.replace(/[\r\n]/g, "");
-	content=content.replace(/(^\s*)|(\s*$)/g, "");
-	content=content.replace(/[\r\n]/g, "");
-	contenttxt=contenttxt.replace(/<p><br><\/p>/g,"");
-	content=content.replace(/<p><br><\/p>/g,"");
+	contenttxt	=	contenttxt.replace(/(^\s*)|(\s*$)/g, "");
+	contenttxt	=	contenttxt.replace(/[\r\n]/g, "");
+	content		=	content.replace(/(^\s*)|(\s*$)/g, "");
+	content		=	content.replace(/[\r\n]/g, "");
+	contenttxt	=	contenttxt.replace(/<p><br><\/p>/g,"");
+	content		=	content.replace(/<p><br><\/p>/g,"");
 	
-	if (contenttxt==""&&!(content.indexOf("img")>=0)){
+	if (contenttxt == "" && !(content.indexOf("img")>=0)){
 		return false;
 	}
 	 if(jsuname==""){

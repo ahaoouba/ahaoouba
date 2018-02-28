@@ -5,7 +5,21 @@
 			{{template "/model/menu.html" .}}
 			<div class="page-content" style="margin-left: 260px;">
 				<div class="form-horizontal" style="margin-top:20px;">
-					<div class="video" style="width: 1000px;height: 600px;"></div>
+					<div class="video" style="width: 1000px;height: 600px;margin-left:20px;float:left;"></div>
+					
+					<div style="border-radius:5px;width:400px;height:800px;background:#eee;float:left;margin-left:30px;">
+						<div style="border-radius:5px;height:70px;background:#6e6e6e;color:#fff;font-size:30px;font-weight:700;line-height:70px;text-align:center;">聊天区域</div>
+						<div style="border-radius:5px;height:600px;background:#eee;">
+							<div id="mespart" style="padding:20px;width:400px;height:600px;overflow-y:scroll;background:#eee;border-radius:5px;"></div>
+						</div>
+						<!--<div style="height:60px;background:#eee;"></div>-->
+						<textarea id="talkmessage" style="width:400px;height:80px;margin-bottom:0;padding:20px;"></textarea>
+						
+						<div style="border-radius:5px;height:60px;background:#eee;">
+							<div class="btn btn-success" id="J-btn-fs" style="float:right;margin-top:10px;margin-right:20px;">Enter</div>
+				
+						</div>
+					</div>
 						<script type="text/javascript">
 						code = {{$.live.Code}};
 							var videoObject = {
@@ -23,7 +37,52 @@
 			</div>
 		</div>
 	</div>
-<script type="text/javascript"></script>
+<script type="text/javascript">
+	var ws = new WebSocket('ws://192.168.10.23:8800/index/wstalkroom?code='+code);
+		ws.onmessage = function(e) {
+				var jsonstr = $.parseJSON(e.data);
+				var str=jsonstr.Message;
+				//console.log(str.Fsname);
+				if (str.Type == 1){
+					$("#mespart").append('<div style="height:20px;">' +  "欢迎"+{{$.username}}+"来到本直播间!" + '</div>');								
+				}else if(str.Type == 2){
+					
+					$("#mespart").append('<div style="height:20px;">' + str.Fsname +'：' + str.Content + '</div>');
+				}else{
+					
+				}
+				
+				$("#mespart").scrollTop(1000000);
+			}
+			
+			$(document).keydown(function(event){
+				if(event.keyCode == 13){
+					$("#J-btn-fs").click();
+				}
+			});
+			
+	$("#J-btn-fs").click(function(){
+		$.ajax({
+							url: "/index/talkroommessages",
+							type: 'POST',
+							dataType: "json",
+							data: {
+								content:$("#talkmessage").val(),
+								fsname:{{$.username}},
+								code:code,
+						},
+							async: false,
+							success: function(data) {
+								if(data.success) {
+									$("#talkmessage").val("");
+									} else {
+								}
+							},
+							error: function() {	
+							}
+						});/**/
+	});		
+</script>
 
 </body>
 </html>
