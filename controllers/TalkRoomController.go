@@ -4,8 +4,7 @@ import (
 	"ahaoouba/models"
 	"common/ajax"
 	"common/base"
-	"encoding/json"
-	//"encoding/json"
+
 	"net/http"
 
 	"github.com/astaxie/beego"
@@ -17,6 +16,7 @@ type TalkRoomController struct {
 
 //聊天室创建连接
 func (this *TalkRoomController) TalkRoom() {
+
 	upgrader.CheckOrigin = func(Request *http.Request) bool {
 		return true
 	}
@@ -37,27 +37,15 @@ func (this *TalkRoomController) TalkRoom() {
 
 	}
 	models.RoomWss = append(models.RoomWss, wss)
-
-	func() {
+	go func() {
 		rt := new(models.RoomTalk)
+		m := new(models.RoomTalkData)
 
-		unamebyt, err := json.Marshal(this.GetSession("username"))
-		if err != nil {
-			beego.Error(err)
-			return
-		}
-		beego.Debug(string(unamebyt))
-		err = json.Unmarshal(unamebyt, &rt.Fsname)
-		if err != nil {
-			beego.Error(err)
-			return
-		}
-
-		rt.Content = "欢迎" + rt.Fsname + "来到本直播间!"
+		rt.Content = "欢迎" + this.GetString("username") + "来到本直播间!"
 		rt.Code = this.GetString("code", "")
 		rt.Fstime = base.GetCurrentData()
 		rt.Type = models.HuanYing
-		m := new(models.RoomTalkData)
+
 		m.Message = rt
 		models.RoomBroadcast <- m
 	}()

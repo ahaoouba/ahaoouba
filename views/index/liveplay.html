@@ -5,7 +5,10 @@
 			{{template "/model/menu.html" .}}
 			<div class="page-content" style="margin-left: 260px;">
 				<div class="form-horizontal" style="margin-top:20px;">
-					<div class="video" style="width: 1000px;height: 600px;margin-left:20px;float:left;"></div>
+				
+					<div class="video" style="width: 1000px;height: 600px;margin-left:20px;float:left;">
+						
+					</div>
 					
 					<div style="border-radius:5px;width:400px;height:800px;background:#eee;float:left;margin-left:30px;">
 						<div style="border-radius:5px;height:70px;background:#6e6e6e;color:#fff;font-size:30px;font-weight:700;line-height:70px;text-align:center;">聊天区域</div>
@@ -38,20 +41,39 @@
 		</div>
 	</div>
 <script type="text/javascript">
-	var ws = new WebSocket('ws://192.168.10.23:8800/index/wstalkroom?code='+code);
+	var ws = new WebSocket('ws://192.168.10.23:8800/index/wstalkroom?code='+code+'&username='+{{$.username}});
 		ws.onmessage = function(e) {
 				var jsonstr = $.parseJSON(e.data);
 				var str=jsonstr.Message;
 				//console.log(str.Fsname);
 				if (str.Type == 1){
-					$("#mespart").append('<div style="height:20px;">' +  "欢迎"+{{$.username}}+"来到本直播间!" + '</div>');								
+					$("#mespart").append('<div style="height:20px;">' +  str.Content + '</div>');								
 				}else if(str.Type == 2){
 					
 					$("#mespart").append('<div style="height:20px;">' + str.Fsname +'：' + str.Content + '</div>');
 				}else{
 					
 				}
+				////弹幕
+				if (str.Type == 1){
+					var info = str.Content;
+				}else{
+					var info = str.Fsname +'：' + str.Content;
+				}
+				//生成随机颜色
 				
+				
+				var item={
+				   img:'', //图片 
+				   info:info, //文字 
+				   href:'', //链接 
+				   close:true, //显示关闭按钮 
+				   speed:6, //延迟,单位秒,默认6 
+				   bottom:'', //距离底部高度,单位px,默认随机 
+				   color:"#fff", //颜色,默认白色 
+				   old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色 
+				 }
+				$('body').barrager(item);
 				$("#mespart").scrollTop(1000000);
 			}
 			
@@ -82,6 +104,9 @@
 							}
 						});/**/
 	});		
+	
+	
+	
 </script>
 
 </body>
