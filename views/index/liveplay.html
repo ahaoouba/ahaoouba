@@ -1,0 +1,133 @@
+{{template "/model/head.html" .}}
+<style>
+.lw {cursor:pointer;float:left;margin-left:15px;width:66px;height:66px;background:red;margin-top:15px;}
+</style>
+<script type="text/javascript" src="/static/ckplayer/ckplayer.js"></script>
+	<div class="container-fluid  main-container">
+		<div class="row">
+			{{template "/model/menu.html" .}}
+			<div class="page-content" style="margin-left: 260px;">
+				<div class="form-horizontal" style="margin-top:20px;">
+				
+					<div class="video" style="width: 1000px;height: 600px;margin-left:20px;float:left;">
+						
+					</div>
+					
+					<div style="border-radius:5px;width:400px;height:800px;background:#eee;float:left;margin-left:30px;">
+						<div style="border-radius:5px;height:70px;background:#6e6e6e;color:#fff;font-size:30px;font-weight:700;line-height:70px;text-align:center;">聊天区域</div>
+						<div style="border-radius:5px;height:600px;background:#eee;">
+							<div id="mespart" style="padding:20px;width:400px;height:600px;overflow-y:scroll;background:#eee;border-radius:5px;"></div>
+						</div>
+						<!--<div style="height:60px;background:#eee;"></div>-->
+						<textarea id="talkmessage" style="width:400px;height:80px;margin-bottom:0;padding:20px;"></textarea>
+						
+						<div style="border-radius:5px;height:60px;background:#eee;">
+							<div class="btn btn-success" id="J-btn-fs" style="float:right;margin-top:10px;margin-right:20px;">Enter</div>
+				
+						</div>
+					</div>
+						<script type="text/javascript">
+						code = {{$.live.Code}};
+							var videoObject = {
+								container: '.video',//“#”代表容器的ID，“.”或“”代表容器的class
+								variable: 'player',//该属性必需设置，值等于下面的new chplayer()的对象
+								autoplay:true,//自动播放
+								live:true,//直播视频形式
+								video:[//视频地址列表形式
+											['rtmp://192.168.10.23/live/'+code, '', '中文标清', 0],
+										]
+							};
+							var player=new ckplayer(videoObject);
+						</script>
+				</div>
+			</div>
+			<div style="float:left;margin-top:-170px;margin-left:20px;width:1000px;height:190px;border:5px solid #6e6e6e;">
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+				<div class="lw"></div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+	var ws = new WebSocket('ws://192.168.10.23:8800/index/wstalkroom?code='+code+'&username='+{{$.username}});
+		ws.onmessage = function(e) {
+				var jsonstr = $.parseJSON(e.data);
+				var str=jsonstr.Message;
+				//console.log(str.Fsname);
+				if (str.Type == 1){
+					$("#mespart").append('<div style="height:20px;">' +  str.Content + '</div>');								
+				}else if(str.Type == 2){
+					
+					$("#mespart").append('<div style="height:20px;">' + str.Fsname +'：' + str.Content + '</div>');
+				}else{
+					
+				}
+				////弹幕
+				if (str.Type == 1){
+					var info = str.Content;
+				}else{
+					var info = str.Fsname +'：' + str.Content;
+				}
+				//生成随机颜色
+				
+				
+				var item={
+				   img:'', //图片 
+				   info:info, //文字 
+				   href:'', //链接 
+				   close:true, //显示关闭按钮 
+				   speed:6, //延迟,单位秒,默认6 
+				   bottom:'', //距离底部高度,单位px,默认随机 
+				   color:"#fff", //颜色,默认白色 
+				   old_ie_color:'#000000', //ie低版兼容色,不能与网页背景相同,默认黑色 
+				 }
+				$('body').barrager(item);
+				$("#mespart").scrollTop(1000000);
+			}
+			
+			$(document).keydown(function(event){
+				if(event.keyCode == 13){
+					$("#J-btn-fs").click();
+				}
+			});
+			
+	$("#J-btn-fs").click(function(){
+		$.ajax({
+							url: "/index/talkroommessages",
+							type: 'POST',
+							dataType: "json",
+							data: {
+								content:$("#talkmessage").val(),
+								fsname:{{$.username}},
+								code:code,
+						},
+							async: false,
+							success: function(data) {
+								if(data.success) {
+									$("#talkmessage").val("");
+									} else {
+								}
+							},
+							error: function() {	
+							}
+						});/**/
+	});		
+	
+	
+	
+</script>
+
+</body>
+</html>

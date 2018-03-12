@@ -92,7 +92,29 @@ func init() {
 		beego.NSRouter("myliveinfo", &controllers.LiveController{}, "GET:QueryLiveInfo"),
 		//修改用户直播状态
 		beego.NSRouter("startstoplive", &controllers.LiveController{}, "POST:UpdateLiveInfo"),
-		//
+		//直播大厅
+		beego.NSRouter("livehall", &controllers.LiveController{}, "GET:LiveHall"),
+		//进入直播间
+		beego.NSRouter("liveplay", &controllers.LiveController{}, "GET:LivePlayRoom"),
+		////////////
+		//聊天室
+		///////////
+		beego.NSRouter("wstalkroom", &controllers.TalkRoomController{}, "GET:TalkRoom"),
+		beego.NSRouter("talkroommessages", &controllers.TalkRoomController{}, "POST:TalkRoomAddMessage"),
+		/////////
+		//礼物
+		//////////
+		//获取礼物信息
+		beego.NSRouter("getgifts", &controllers.GiftController{}, "GET:QueryGiftInfoAjax"),
+		///添加礼物信息
+		beego.NSRouter("addgift", &controllers.GiftController{}, "POST:AddGiftAjax"),
+		//添加礼物展示页面
+		beego.NSRouter("addgiftpage", &controllers.GiftController{}, "GET:AddGiftPage"),
+		//删除礼物
+		beego.NSRouter("deletegift", &controllers.GiftController{}, "POST:DeleteGiftAjax"),
+		//添加礼物图片
+		beego.NSRouter("addgiftpic", &controllers.GiftController{}, "POST:AddGiftPic"),
+		/////////////////
 		//前台
 		////////////////
 		///////////////

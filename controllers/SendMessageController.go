@@ -6,6 +6,7 @@ import (
 
 func init() {
 	go handleMessages()
+	go talkroomMessages()
 }
 func handleMessages() {
 	for {
@@ -23,4 +24,20 @@ func handleMessages() {
 
 	}
 
+}
+func talkroomMessages() {
+	for {
+		msg := <-models.RoomBroadcast
+		for k, ws := range models.RoomWss {
+			if ws.RoomCode == msg.Message.Code {
+				err := ws.WsConn.WriteJSON(msg)
+				if err != nil {
+					ws.WsConn.Close()
+					models.RoomWss = append(models.RoomWss[:k], models.RoomWss[k+1:]...)
+				}
+			}
+
+		}
+
+	}
 }

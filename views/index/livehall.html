@@ -1,0 +1,29 @@
+{{template "/model/head.html" .}}
+<style type="text/css">
+.kk{width:300px;height:200px;background:#fff;float:left;margin-left:30px;margin-bottom:30px;}
+.sx{cursor:pointer;}
+</style>
+	<div class="container-fluid  main-container">
+		<div class="row">
+			{{template "/model/menu.html" .}}
+			<div class="page-content" style="margin-left: 260px;">
+				<div class="form-horizontal" style="margin-top:20px;">
+				{{range $k,$v:=$.lives}}
+					<div class="kk sx" onclick=golive({{$v.Id}}); >
+						<div style="height:160px;position:relative;" ><div  style="text-align:center;background:#5cb85c;color:#fff;width:60px;height:20px;position:absolute;right:0;top:0;">直播中...</div><img style="width:100%;height:100%;" src="/static/images/play.jpg"/></div>
+						<div style="font-size:10px;height:40px;background:#eee;line-height:40px;padding-left:10px;">
+							{{$v.Nickname}}的直播间&nbsp;&nbsp;标签:{{$v.Label}}&nbsp;&nbsp;简介:{{$v.Info}}
+						</div>
+					</div>
+				{{end}}
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	function golive(id){
+		window.location.href="/index/liveplay?id="+id;
+	}
+</script>
+</html>

@@ -4,6 +4,7 @@
 		{{template "/model/menu.html" .}}
 		<div class="page-content" style="margin-left: 260px;">
 			<div class="form-horizontal" style="margin-top:20px;">
+			{{if $.lives}}
 				<div class="col-md-8">
 					<div class="form-group">
 						<label class="col-md-2 control-label">昵称：</label>
@@ -24,6 +25,12 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label class="col-md-2 control-label">推流地址：</label>
+						<div class="col-md-4">
+							<input class="form-control"  id="addr" value="rtmp://192.168.10.23/live"/>
+						</div>
+					</div>
+					<div class="form-group">
 						<label class="col-md-2 control-label">推流密码：</label>
 						<div class="col-md-4">
 							<input class="form-control"  id="code" value="{{$.lives.Code}}"/>
@@ -34,9 +41,10 @@
 					<div class="form-group">
 						<label class="col-md-2 control-label"></label>
 						<div class="col-md-1">
-							<button  id="opli" onclick="openlive()" class='btn {{if eq $.lives.Islive "false"}}btn-success{{else}}btn-danger {{end}}' style="width:100px;">开启直播</button>
+							<button  id="opli" onclick="openlive()" class='btn {{if eq $.lives.Islive "false"}}btn-success{{else}}btn-danger {{end}}' style="width:100px;">{{if eq $.lives.Islive "false"}}开启直播{{else}}关闭直播{{end}}</button>
 						</div>
 					</div>
+				{{end}}
 				</div>
 			</div>
 		</div>
