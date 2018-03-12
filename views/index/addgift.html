@@ -1,0 +1,132 @@
+{{template "/model/head.html" .}}
+<div class="container-fluid  main-container">
+	<div class="row">
+		{{template "/model/menu.html" .}}
+		<div class="page-content" style="margin-left: 260px;">
+			<div class="form-horizontal" style="margin-top:20px;">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="col-md-2 control-label">名称</label>
+						<div class="col-md-2">
+							<input class="form-control"  id="name" type="text" value="" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label">价格</label>
+						<div class="col-md-1">
+							<input class="form-control"  id="price" type="text" value="" />
+						</div>
+					</div>
+					
+					<div class="form-group" role="document">
+						<label class="col-md-2 control-label">图像</label>
+						<div class="col-md-10" id="ss">
+							<form action="" id="ContentForm" method="post" enctype="multipart/form-data" class="form-horizontal">
+							<!--待添加内容-->
+							</form>						
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label"></label>
+						<div class="col-md-1">
+							<button class="btn btn-primary"   onclick="giftadd()" class="btn btn-primary" style="width:100px;">确认</button>
+						</div>
+					</div>
+				</div>	
+			</div>	
+		</div>	
+	</div>
+	
+</div>
+
+
+<script type="text/javascript">
+var picurl="";
+var str = '<div class="tab-content zs_two">' +
+			'<form id="upload_files" method="post" enctype="multipart/form-data">' +
+			'<input type="file" name="file[]" id="filer_input" data-jfiler-uploadUrl="" multiple></form></div>';
+var $cont = $(str);
+		$('#ss').html($cont);
+	//上传
+		$('#filer_input').filer({
+			showThumbs: true,
+			/*只有扩展名为xslx的文件可以上传*/
+			extensions: null,
+			uploadFile: {
+				url: "/index/addgiftpic",
+				data: {},
+				type: 'POST',
+				enctype: 'multipart/form-data',
+				//              beforeSend: function(){},
+				success: function(data, el) {
+					$('#tb tr:gt(0)').remove(); //删除之前的数据
+					
+					if(data.success) {
+						
+						picurl=data.data;
+						console.log("上传成功!");
+						
+					} else {
+						var ok = "上传失败：" + data.errmsg
+					}
+					
+					var parent = el.find(".jFiler-jProgressBar").parent();
+					el.find(".jFiler-jProgressBar").fadeOut("slow", function() {
+						if(data.success) {
+							$("<div class=\"jFiler-item-others text-success\"><i class=\"icon-jfi-check-circle\"></i>"+ok+"</div>").hide().appendTo(parent).fadeIn("slow");
+							 $(".text-success").css({
+								"position":"absolute",
+								"top":"-55px",
+								"left":"420px"
+							});
+						} else {
+							console.log(data.errmsg);
+							$("<div class=\"jFiler-item-others text-error\" style=\"color:#e92322;\"><i class=\"icon-jfi-minus-circle\"></i>"+ok+"</div>").hide().appendTo(parent).fadeIn("slow");
+							$(".text-error").css({
+								"position":"absolute",
+								"top":"-19px",
+								"left":0
+							});
+						}
+					});
+					console.log(data);
+				},
+				error: function(el) {
+					var parent = el.find(".jFiler-jProgressBar").parent();
+					el.find(".jFiler-jProgressBar").fadeOut("slow", function() {
+						$("<div class=\"jFiler-item-others text-error\"><i class=\"icon-jfi-minus-circle\"></i> 上传失败</div>").hide().appendTo(parent).fadeIn("slow");
+					});
+				},
+				statusCode: null,
+				onProgress: null,
+				onComplete: null
+			},
+		});
+	
+	
+	function giftadd(){
+		$.ajax({
+				url: "/index/addgift",
+				type: 'POST',
+				dataType: "json",
+				data: {
+					name	:	$("#name").val(),
+					price	:	$("#price").val(),
+					picpath	:	picurl,
+			},
+				async: false,
+				success: function(data) {
+					if(data.success) {
+						alert("添加成功");
+						location.reload();
+						} else {
+					}
+				},
+				error: function() {	
+				}
+			});/**/
+	}
+</script>
+</body>
+
+</html>
