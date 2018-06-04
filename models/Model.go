@@ -28,7 +28,6 @@ func InitDB() {
 	dburl = fmt.Sprintf(dburl,
 		"root",
 		"123456",
-
 		"127.0.0.1",
 		3306,
 		"ahaooubabk",
@@ -42,6 +41,9 @@ func InitDB() {
 		os.Exit(1)
 	}
 	orm.Debug = false
-
+	//	err = orm.RunSyncdb("default", false, true) //建表
+	//	if err != nil {
+	//		beego.Error(err)
+	//	}
 	dbReady = true
 }
